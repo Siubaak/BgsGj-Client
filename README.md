@@ -13,7 +13,9 @@ cd back
 npm install
 
 # 在localhost:8080上进行调试
-npm run dev
+npm run dev # Vue
+# 或
+npm start # React
 
 # 压缩打包
 npm run build
