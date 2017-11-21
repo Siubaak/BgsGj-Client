@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import { Switch, Redirect, Route, Link } from 'react-router-dom'
-import { Layout, Menu, Icon, Avatar, Dropdown, Breadcrumb } from 'antd'
+import { Layout, Menu, Icon, Avatar, Dropdown, Breadcrumb, message } from 'antd'
 import Util from './util'
 import Material from './material'
 import Meeting from './meeting'
@@ -37,6 +37,13 @@ class Home extends Component {
   onCollapse = (collapsed) => {
     this.setState({ collapsed })
   }
+  onClick = ({ key }) => {
+    if (key === 'u1') {
+      localStorage.removeItem('yhbgsback')
+      message.warn('注销成功')
+      setTimeout(() => window.location.href = '/login', 1000)
+    }
+  }
   render() {
     return (
       <Layout className='home'>
@@ -51,29 +58,28 @@ class Home extends Component {
               key='sub1'
               title={<span><Icon type='shop' /><span>物资</span></span>}
             >
-              <Menu.Item key='1'><Link to={malist}>申请</Link></Menu.Item>
-              <Menu.Item key='2'><Link to={mamgmt}>管理</Link></Menu.Item>
+              <Menu.Item key='s0'><Link to={malist}>申请</Link></Menu.Item>
+              <Menu.Item key='s1'><Link to={mamgmt}>管理</Link></Menu.Item>
             </SubMenu>
             <SubMenu
               key='sub2'
               title={<span><Icon type='team' /><span>会议室</span></span>}
             >
-              <Menu.Item key='3'><Link to={melist}>预约</Link></Menu.Item>
-              <Menu.Item key='4'><Link to={memgmt}>管理</Link></Menu.Item>
+              <Menu.Item key='s2'><Link to={melist}>预约</Link></Menu.Item>
+              <Menu.Item key='s3'><Link to={memgmt}>管理</Link></Menu.Item>
             </SubMenu>
             <SubMenu
               key='sub3'
               title={<span><Icon type='notification' /><span>通知</span></span>}
             >
-              <Menu.Item key='5'><Link to={noedit}>编辑</Link></Menu.Item>
-              <Menu.Item key='6'><Link to={nomgmt}>管理</Link></Menu.Item>
+              <Menu.Item key='s4'><Link to={nomgmt}>管理</Link></Menu.Item>
             </SubMenu>
             <SubMenu
               key='sub4'
               title={<span><Icon type='user' /><span>用户</span></span>}
             >
-              <Menu.Item key='7'><Link to={ursett}>设置</Link></Menu.Item>
-              <Menu.Item key='8'><Link to={urmgmt}>管理</Link></Menu.Item>
+              <Menu.Item key='s5'><Link to={ursett}>设置</Link></Menu.Item>
+              <Menu.Item key='s6'><Link to={urmgmt}>管理</Link></Menu.Item>
             </SubMenu>
           </Menu>
         </Sider>
@@ -82,9 +88,9 @@ class Home extends Component {
             {breads[window.location.pathname]
               || <div/>}
             <Dropdown overlay={
-              <Menu>
-                <Menu.Item><Link to={ursett}>设置</Link></Menu.Item>
-                <Menu.Item>注销</Menu.Item>
+              <Menu onClick={this.onClick}>
+                <Menu.Item key='u0'><Link to={ursett}>设置</Link></Menu.Item>
+                <Menu.Item key='u1'>注销</Menu.Item>
               </Menu>}
               placement='bottomCenter'
               trigger={['click']}

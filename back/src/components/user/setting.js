@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 
-class Mgmt extends Component {
+class Setting extends Component {
   render() {
     return (
       <div>
@@ -10,4 +10,4 @@ class Mgmt extends Component {
   }
 }
 
-export default Mgmt
+export default Setting

@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
-import { Form, Icon, Input, Button, notification } from 'antd'
-import api from '../../api'
+import { Form, Icon, Input, Button, message } from 'antd'
+import common from '../../common'
 const FormItem = Form.Item
 
 class NormalLoginForm extends Component {
@@ -8,20 +8,12 @@ class NormalLoginForm extends Component {
     e.preventDefault()
     this.props.form.validateFields((err, values) => {
       if (!err) {
-        api.postToken(values)
-          .end((err, res) => {
-            if (err || !res.ok) {
-              alert('Oh no! error');
-            } else {
-              //const { token } = JSON.parse(res.text)
-              notification.success({
-                message: '登录成功',
-                description: '正在跳转',
-              })
-              localStorage.setItem('')
-              //setTimeout(() => window.location.href = '/', 1500)
-            }
-          })
+        common.handle(common.api.postTokens(values), res => {
+          const { token } = JSON.parse(res.text)
+          message.success('登录成功')
+          localStorage.setItem('yhbgsback', token)
+          setTimeout(() => window.location.href = '/', 1000)
+        })
       }
     })
   }
