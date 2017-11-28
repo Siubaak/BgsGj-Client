@@ -48,6 +48,11 @@ export default {
       .set('Authorization', getToken())
       .send(params)
   },
+  delMaterials(params) {
+    return request.del(resources.materials)
+      .set('Authorization', getToken())
+      .query(params)
+  },
 
   getMatbooks(params) {
     return request.get(resources.matbooks)

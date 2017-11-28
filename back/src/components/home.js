@@ -32,7 +32,7 @@ const breads = {
 
 class Home extends Component {
   state = {
-    collapsed: window.innerWidth <= 760,
+    collapsed: window.innerWidth <= 768,
   }
   onCollapse = (collapsed) => {
     this.setState({ collapsed })

@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Switch } from 'antd'
+import { Switch, Form, Input, Button } from 'antd'
 import common from '../../common'
 import Util from '../util'
 import './material.less'
@@ -36,24 +36,62 @@ class Mgmt extends Component {
         }
       })
     exData.push({
-      key: `${record._id}enable`, index: '启用', text: <Switch size='small' checked={record.enable}
-        onChange={checked =>
-          common.handle(common.api.putMaterials({ _id: record._id, enable: checked }),
-          () => record.enable = checked,
-          this.setState.bind(this)
-      )}/>
+      key: `${record._id}enable`, index: '操作',
+      text: (
+        <div>
+          <Switch checked={record.enable} checkedChildren='启用' unCheckedChildren='禁用'
+            onChange={checked =>
+              common.handle(common.api.putMaterials({ _id: record._id, enable: checked }),
+              () => record.enable = checked,
+              this.setState.bind(this)
+          )}/>
+          <Button type='danger' size='small' className='opt-btn'
+            onClick={() =>
+              common.handle(common.api.delMaterials({ _id: record._id }),
+                () => record = undefined,
+                this.setState.bind(this)
+          )}>
+            删除
+          </Button>
+        </div>
+      )
     })
     return exData
   }
+  getFormItems = getFieldDecorator => [
+    { key: 'type', label: '分类', type: 'text' },
+    { key: 'name', label: '名称', type: 'text' },
+    { key: 'quantity', label: '数量', type: 'number' },
+    { key: 'unit', label: '单位', type: 'text' },
+    { key: 'price', label: '单价', type: 'number' },
+  ].map(obj => 
+    <Form.Item
+      className='new-form-item'
+      label={obj.label}
+      labelCol={{span: 6}}
+      wrapperCol={{span: 18}}
+      key={`${obj.key}new`}
+    >
+      {
+        getFieldDecorator(obj.key, {
+          rules: [{ required: true, message: `请输入${obj.label}` }],
+        })(<Input type={obj.type}/>)
+      }
+    </Form.Item>
+  )
+  handleCreate = (material, done) => common.handle(common.api.postMaterials(material), done)
   render() {
     return (
-      <Util.List 
-        state={this.state}
-        setState={this.setState.bind(this)}
-        columns={this.columns}
-        getExData={this.getExData}
-        api={common.api.getMaterials}
-      />
+      <div>
+        <Util.List 
+          state={this.state}
+          setState={this.setState.bind(this)}
+          columns={this.columns}
+          getExData={this.getExData}
+          api={common.api.getMaterials}
+          new={{btnText: '新建物资', onCreate: this.handleCreate, getFormItems: this.getFormItems}}
+        />
+      </div>
     )
   }
 }

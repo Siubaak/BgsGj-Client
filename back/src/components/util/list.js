@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import { Table } from 'antd'
 import common from '../../common'
+import New from './new'
 import './util.less'
 
 class List extends Component {
@@ -32,7 +33,7 @@ class List extends Component {
       })
     }, this.props.setState)
   }
-  onChange = pagination => {
+  handleChange = pagination => {
     const pager = { ...this.props.state.pagination }
     pager.current = pagination.current
     this.props.setState({ pagination: pager })
@@ -50,17 +51,24 @@ class List extends Component {
   render() {
     const { data, pagination, loading } = this.props.state
     return (
-      <Table 
-        className='table' 
-        dataSource={data}
-        loading={loading}
-        scroll={{ x: 400 }}
-        pagination={pagination}
-        onChange={this.onChange}
-        columns={this.props.columns}
-        rowKey={record => record._id}
-        expandedRowRender={typeof this.props.getExData === 'function' ? this.getExTable : null}
-      />
+        <Table 
+          className='table' 
+          dataSource={data}
+          loading={loading}
+          scroll={{ x: 400 }}
+          pagination={pagination}
+          onChange={this.handleChange}
+          columns={this.props.columns}
+          rowKey={record => record._id}
+          expandedRowRender={typeof this.props.getExData === 'function' ? this.getExTable : null}
+          footer={this.props.new ? () => <New {...this.props.new}
+            onChange={() =>
+              this.fetch({
+                skip: 0,
+                limit: this.props.state.pagination.pageSize,
+              })
+            }></New> : null}
+        />
     )
   }
 }
