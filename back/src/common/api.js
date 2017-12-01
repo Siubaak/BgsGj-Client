@@ -6,7 +6,7 @@ const resources = {
   notes: apiUrl + '/notes',
   materials: apiUrl + '/materials',
   matbooks: apiUrl + '/matbooks',
-  meeting: apiUrl + '/meetings',
+  meetings: apiUrl + '/meetings',
   metbooks: apiUrl + '/metbooks',
 }
 const getToken = () => {
@@ -32,7 +32,12 @@ export default {
       .set('Authorization', getToken())
       .query(params)
   },
-
+  putNotes(params) {
+    return request.get(resources.notes)
+      .set('Authorization', getToken())
+      .send(params)
+  },
+  
   getMaterials(params) {
     return request.get(resources.materials)
       .set('Authorization', getToken())
@@ -65,6 +70,15 @@ export default {
       .send(params)
   },
 
+  getMeetings() {
+    return request.get(resources.meetings)
+      .set('Authorization', getToken())
+  },
+  putMeetings(params) {
+    return request.put(resources.meetings)
+      .set('Authorization', getToken())
+      .send(params)
+  },
   getMetbooks(params) {
     return request.get(resources.metbooks)
       .set('Authorization', getToken())

@@ -24,7 +24,7 @@ class List extends Component {
   fetch = params => {
     const { pagination } = this.props.state
     common.handle(this.props.api(params), res => {
-      const { total, list } = JSON.parse(res.text)
+      const { total, list } = res.body
       const pager = { ...pagination }
       pager.total = total
       this.props.setState({
@@ -59,8 +59,14 @@ class List extends Component {
           pagination={pagination}
           onChange={this.handleChange}
           columns={this.props.columns}
-          rowKey={record => record._id}
-          expandedRowRender={typeof this.props.getExData === 'function' ? this.getExTable : null}
+          rowKey='_id'
+          expandedRowRender={
+            typeof this.props.getExData === 'function'
+            ? this.getExTable
+            : typeof this.props.getExDesc === 'function'
+              ? this.props.getExDesc
+              : null
+          }
           footer={this.props.new ? () => <New {...this.props.new}
             onChange={() =>
               this.fetch({

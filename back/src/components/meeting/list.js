@@ -23,11 +23,11 @@ class MeList extends Component {
     { title: '手机', key: 'melistphone', dataIndex: 'phone' },
   ]
   getExData = record => [
-    { key: `${record}activity`, index: '会议', text: record.activity },
-    { key: `${record}date`, index: '日期', text: record.date },
-    { key: `${record}time`, index: '时间', text: record.time },
-    { key: `${record}proj`, index: '投影', text: record.proj ? '需要' : '不需要' },
-    { key: `${record}operations`, index: '操作', text: (
+    { key: `${record._id}activity`, index: '会议', text: record.activity },
+    { key: `${record._id}date`, index: '日期', text: record.date },
+    { key: `${record._id}time`, index: '时间', text: record.time },
+    { key: `${record._id}proj`, index: '投影', text: record.proj ? '需要' : '不需要' },
+    { key: `${record._id}operations`, index: '操作', text: (
       <Button.Group size='small'>
         {
           [
@@ -53,7 +53,6 @@ class MeList extends Component {
       <Util.List
         state={this.state}
         setState={this.setState.bind(this)}
-        className='table'
         columns={this.columns}
         getExData={this.getExData}
         api={common.api.getMetbooks} 

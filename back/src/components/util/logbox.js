@@ -8,7 +8,7 @@ class NormalLoginForm extends Component {
     this.props.form.validateFields((err, values) => {
       if (!err) {
         common.handle(common.api.postTokens(values), res => {
-          const { token } = JSON.parse(res.text)
+          const { token } = res.body
           message.success('登录成功')
           localStorage.setItem('yhbgsback', token)
           setTimeout(() => window.location.href = '/', 1000)

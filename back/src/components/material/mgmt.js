@@ -36,22 +36,22 @@ class Mgmt extends Component {
         }
       })
     exData.push({
-      key: `${record._id}enable`, index: '操作',
+      key: `${record._id}enable`, index: '启用',
       text: (
-        <div>
-          <Switch checked={record.enable} checkedChildren='启用' unCheckedChildren='禁用'
+        <div className='mgmt-opts'>
+          <Switch checked={record.enable} size='small'
             onChange={checked =>
               common.handle(common.api.putMaterials({ _id: record._id, enable: checked }),
               () => record.enable = checked,
               this.setState.bind(this)
           )}/>
-          <Button type='danger' size='small' className='opt-btn'
+          <Button type='danger' size='small'
             onClick={() =>
               common.handle(common.api.delMaterials({ _id: record._id }),
                 () => record = undefined,
                 this.setState.bind(this)
           )}>
-            删除
+            删除物资
           </Button>
         </div>
       )
