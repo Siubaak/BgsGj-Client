@@ -56,7 +56,7 @@ export default {
   delMaterials(params) {
     return request.del(resources.materials)
       .set('Authorization', getToken())
-      .query(params)
+      .send(params)
   },
 
   getMatbooks(params) {
