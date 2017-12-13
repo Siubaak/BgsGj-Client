@@ -16,28 +16,39 @@ const getToken = () => {
 }
 
 export default {
+  // Token
   postTokens(params) {
     return request.post(resources.token)
       .send(params)
   },
-
+  // 用户
   getUsers(params) {
     return request.get(resources.users)
       .set('Authorization', getToken())
       .query(params)
   },
-
+  putUsers(params) {
+    return request.put(resources.users)
+      .set('Authorization', getToken())
+      .send(params)
+  },
+  // 通知
   getNotes(params) {
     return request.get(resources.notes)
       .set('Authorization', getToken())
       .query(params)
   },
-  putNotes(params) {
-    return request.get(resources.notes)
+  postNotes(params) {
+    return request.post(resources.notes)
       .set('Authorization', getToken())
       .send(params)
   },
-  
+  putNotes(params) {
+    return request.put(resources.notes)
+      .set('Authorization', getToken())
+      .send(params)
+  },
+  // 物资
   getMaterials(params) {
     return request.get(resources.materials)
       .set('Authorization', getToken())
@@ -58,7 +69,7 @@ export default {
       .set('Authorization', getToken())
       .send(params)
   },
-
+  // 物资申请
   getMatbooks(params) {
     return request.get(resources.matbooks)
       .set('Authorization', getToken())
@@ -69,7 +80,7 @@ export default {
       .set('Authorization', getToken())
       .send(params)
   },
-
+  // 会议室
   getMeetings() {
     return request.get(resources.meetings)
       .set('Authorization', getToken())
@@ -79,6 +90,7 @@ export default {
       .set('Authorization', getToken())
       .send(params)
   },
+  // 会议室预约
   getMetbooks(params) {
     return request.get(resources.metbooks)
       .set('Authorization', getToken())

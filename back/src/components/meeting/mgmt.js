@@ -23,7 +23,7 @@ class Mgmt extends Component {
         className='table'
         loading={this.state.loading}
         columns={[
-          { title: '', key: 'index', dataIndex: 'index' },
+          { title: '', key: 'index', dataIndex: 'index', width: 100 },
           { title: '', key: 'text', dataIndex: 'text' },
         ]}
         dataSource={[

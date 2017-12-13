@@ -101,7 +101,7 @@ class Home extends Component {
           </Header>
           <Content className='content'>
             <Switch>
-              <Route exact path="/" render={() => <Redirect to={malist} />} />
+              <Route exact path='/' render={() => <Redirect to={malist} />} />
               <Route exact path={malist} component={Material.List} />
               <Route exact path={mamgmt} component={Material.Mgmt} />
               <Route exact path={melist} component={Meeting.List} />

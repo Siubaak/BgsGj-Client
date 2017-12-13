@@ -7,7 +7,7 @@ import './meeting.less'
 class MeList extends Component {
   state = {
     data: [],
-    pagination: { size: 'small', pageSize: 10 },
+    pagination: { size: 'small', pageSize: 10, current: 1 },
     loading: false,
   }
   cond = [

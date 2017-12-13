@@ -5,7 +5,7 @@ class NewBoxFom extends Component {
   render() {
     const { getFieldDecorator } = this.props.form
     return (
-      <Form layout='inline' className='new-form'>
+      <Form>
         {
           typeof this.props.getFormItems === 'function'
           ? this.props.getFormItems(getFieldDecorator)
@@ -63,7 +63,7 @@ class New extends Component {
       <div className='new'>
         <Button type='default' className='new-button' onClick={this.showModal}>{this.props.btnText}</Button>
         <Modal
-          okText='新建'
+          okText='确定'
           title={this.state.title}
           onOk={this.handleCreate}
           onCancel={this.handleCancel}

@@ -7,7 +7,7 @@ import './material.less'
 class Mgmt extends Component {
   state = {
     data: [],
-    pagination: { size: 'small', pageSize: 10 },
+    pagination: { size: 'small', pageSize: 10, current: 1 },
     loading: false,
   }
   columns = [
@@ -46,11 +46,7 @@ class Mgmt extends Component {
               this.setState.bind(this)
           )}/>
           <Button type='danger' size='small'
-            onClick={() =>
-              common.handle(common.api.delMaterials({ _id: record._id }),
-                () => record = undefined,
-                this.setState.bind(this)
-          )}>
+            onClick={() => this.handleDelete(record)}>
             删除物资
           </Button>
         </div>
@@ -66,10 +62,9 @@ class Mgmt extends Component {
     { key: 'price', label: '单价', type: 'number' },
   ].map(obj => 
     <Form.Item
-      className='new-form-item'
       label={obj.label}
-      labelCol={{span: 6}}
-      wrapperCol={{span: 18}}
+      labelCol={{span: 5}}
+      wrapperCol={{span: 16}}
       key={`${obj.key}new`}
     >
       {
@@ -80,6 +75,23 @@ class Mgmt extends Component {
     </Form.Item>
   )
   handleCreate = (material, done) => common.handle(common.api.postMaterials(material), done)
+  handleDelete = record => {
+    common.handle(common.api.delMaterials({ _id: record._id }), () => {
+        const { pagination } = this.state
+        common.handle(common.api.getMaterials({
+          skip: pagination.pageSize * (pagination.current - 1),
+          limit: pagination.pageSize,
+        }), res => {
+          const { total, list } = res.body
+          const pager = { ...pagination }
+          pager.total = total
+          this.setState({
+            data: list,
+            pagination: pager,
+          })
+        }, this.setState.bind(this))
+      }, this.setState.bind(this))
+  }
   render() {
     return (
       <div>
@@ -89,7 +101,7 @@ class Mgmt extends Component {
           columns={this.columns}
           getExData={this.getExData}
           api={common.api.getMaterials}
-          new={{btnText: '新建物资', onCreate: this.handleCreate, getFormItems: this.getFormItems}}
+          new={{btnText: '新建物资', layout: 'vertical', onCreate: this.handleCreate, getFormItems: this.getFormItems}}
         />
       </div>
     )

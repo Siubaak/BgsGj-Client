@@ -68,12 +68,13 @@ class List extends Component {
               : null
           }
           footer={this.props.new ? () => <New {...this.props.new}
-            onChange={() =>
+            onChange={() => {
+              const { pageSize, current } = this.props.state.pagination
               this.fetch({
-                skip: 0,
-                limit: this.props.state.pagination.pageSize,
+                skip: pageSize * (current - 1),
+                limit: pageSize,
               })
-            }></New> : null}
+            }}/> : null}
         />
     )
   }
