@@ -28,6 +28,7 @@ class EditableCell extends Component {
   }
   render() {
     const { value, newVal, editable } = this.state
+    console.log(this.props)
     return (
       <div className='editable'>
         {

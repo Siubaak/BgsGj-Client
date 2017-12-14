@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import common from '../../common'
 import Util from '../util'
-import { Form, Input } from 'antd'
+import { Form, Input, Icon } from 'antd'
 import './note.less'
 
 class Mgmt extends Component {
@@ -15,12 +15,17 @@ class Mgmt extends Component {
     { title: '内容', key: 'ntmgmtcontent', dataIndex: 'content', render: text => text.substring(0, 14).length === text.length ? text : text.substring(0, 14) + '...' },
     { title: '更新', key: 'ntmgmtupdated', dataIndex: 'updated', render: text => text.substring(0, 10) },
   ]
-  getExDesc = record => <Util.EditableCell value={record.content || '无'}
-    onCheck={content => 
-      common.handle(common.api.putNotes({ _id: record._id, content }),
-      () => record.content = content,
-      this.setState.bind(this)
-    )}/>
+  getExDesc = record => (
+    <div className='mgmt-edit'>
+      <Util.EditableCell value={record.content || '无'} style={{flex: 1}}
+        onCheck={content => 
+          common.handle(common.api.putNotes({ _id: record._id, content }),
+          () => record.content = content,
+          this.setState.bind(this))}/>
+      <Icon type='delete' className='delete'
+        onClick={() => this.handleDelete(record)}/>
+    </div>
+  )
   getFormItems = getFieldDecorator => [
     { key: 'title', label: '标题', min: 1, max: 3 },
     { key: 'content', label: '内容', min: 5, max: 10 },

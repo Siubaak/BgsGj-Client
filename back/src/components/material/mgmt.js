@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Switch, Form, Input, Button } from 'antd'
+import { Switch, Form, Input, Icon } from 'antd'
 import common from '../../common'
 import Util from '../util'
 import './material.less'
@@ -45,10 +45,8 @@ class Mgmt extends Component {
               () => record.enable = checked,
               this.setState.bind(this)
           )}/>
-          <Button type='danger' size='small'
-            onClick={() => this.handleDelete(record)}>
-            删除物资
-          </Button>
+          <Icon type='delete' className='delete'
+            onClick={() => this.handleDelete(record)}/>
         </div>
       )
     })
