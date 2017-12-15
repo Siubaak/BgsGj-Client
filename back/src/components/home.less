@@ -9,9 +9,12 @@
     justify-content: space-between;
     align-items: center;
     transition: all .2s;
-    .avatar {
+    .icon {
       cursor: pointer;
-      background-color: #87d068;
+      transition: all .2s;
+      &:hover {
+        color: #108ee9;
+      }
     }
   }
   .content {
@@ -20,6 +23,9 @@
   }
   .foot {
     text-align: center;
+  }
+  textarea {
+    resize: none;
   }
   @media screen and (max-width: 768px) {
     .head {

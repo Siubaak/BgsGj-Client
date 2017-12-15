@@ -3,7 +3,9 @@ const apiUrl = '/api'
 const resources = {
   token: apiUrl + '/tokens',
   users: apiUrl + '/users',
+  ausers: apiUrl + '/ausers',
   notes: apiUrl + '/notes',
+  anotes: apiUrl + '/anotes',
   materials: apiUrl + '/materials',
   matbooks: apiUrl + '/matbooks',
   meetings: apiUrl + '/meetings',
@@ -23,7 +25,8 @@ export default {
   },
   // 用户
   getUsers(params) {
-    return request.get(resources.users)
+    return request.get(resources.ausers)
+      .set('Authorization', getToken())
       .query(params)
   },
   putUsers(params) {
@@ -31,9 +34,15 @@ export default {
       .set('Authorization', getToken())
       .send(params)
   },
+  delUsers(params) {
+    return request.del(resources.users)
+      .set('Authorization', getToken())
+      .send(params)
+  },
   // 通知
   getNotes(params) {
-    return request.get(resources.notes)
+    return request.get(resources.anotes)
+      .set('Authorization', getToken())
       .query(params)
   },
   postNotes(params) {

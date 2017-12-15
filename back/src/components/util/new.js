@@ -64,6 +64,7 @@ class New extends Component {
         <Button type='default' className='new-button' onClick={this.showModal}>{this.props.btnText}</Button>
         <Modal
           okText='确定'
+          wrapClassName='modal'
           title={this.state.title}
           onOk={this.handleCreate}
           onCancel={this.handleCancel}

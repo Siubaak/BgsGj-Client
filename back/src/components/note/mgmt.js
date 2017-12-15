@@ -22,28 +22,26 @@ class Mgmt extends Component {
       return {
         key: `${record._id}${obj.key}`,
         index: obj.index,
-        text: <Util.EditableCell value={record[obj.key] || '无'}
+        text: <Util.EditableCell textArea value={record[obj.key] || '无'}
           onCheck={value => 
             common.handle(common.api.putMaterials({ _id: record._id, [obj.key]: value }),
-            () => record[obj.key] = value,
-            this.setState.bind(this)
-          )}/>
+              () => record[obj.key] = value,
+              this.setState.bind(this))}
+        />,
       }
     })
     exData.push({
       key: `${record._id}enable`, index: '显示',
-      text: (
-        <div className='mgmt-opts'>
-          <Switch checked={record.enable} size='small'
-            onChange={checked =>
-              common.handle(common.api.putNotes({ _id: record._id, enable: checked }),
-              () => record.enable = checked,
-              this.setState.bind(this)
-          )}/>
-          <Icon type='delete' className='delete'
-            onClick={() => this.handleDelete(record)}/>
-        </div>
-      )
+      text: <div className='mgmt-opts'>
+        <Switch checked={record.enable} size='small'
+          onChange={checked =>
+            common.handle(common.api.putNotes({ _id: record._id, enable: checked }),
+            () => record.enable = checked,
+            this.setState.bind(this)
+        )}/>
+        <Icon type='delete' className='delete'
+          onClick={() => this.handleDelete(record)}/>
+      </div>,
     })
     return exData
   }
@@ -60,7 +58,7 @@ class Mgmt extends Component {
       {
         getFieldDecorator(obj.key, {
           rules: [{ required: true, message: `请输入${obj.label}` }],
-        })(<Input.TextArea className='textarea' autosize={{ minRows: obj.min, maxRows: obj.max }}/>)
+        })(<Input.TextArea style={{ resize: 'none' }} autosize={{ minRows: obj.min, maxRows: obj.max }}/>)
       }
     </Form.Item>
   )
@@ -93,14 +91,16 @@ class Mgmt extends Component {
   }
   render() {
     return (
-      <Util.List 
-        state={this.state}
-        setState={this.setState.bind(this)}
-        columns={this.columns}
-        api={common.api.getNotes}
-        getExData={this.getExData}
-        new={{btnText: '新建通知', onCreate: this.handleCreate, getFormItems: this.getFormItems}}
-      />
+      <div className='note'>
+        <Util.List
+          state={this.state}
+          setState={this.setState.bind(this)}
+          columns={this.columns}
+          api={common.api.getNotes}
+          getExData={this.getExData}
+          new={{btnText: '新建通知', onCreate: this.handleCreate, getFormItems: this.getFormItems}}
+        />
+      </div>
     )
   }
 }

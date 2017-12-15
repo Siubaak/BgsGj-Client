@@ -33,8 +33,14 @@
   position: relative;
   .input {
     padding-right: 60px;
-    .textarea {
-      resize: none;
+    .dropdown {
+      padding: 4px 7px;
+      width: 100%;
+      text-align: left;
+      .down {
+        position: absolute;
+        right: 7px;
+      }
     }
     .icon-check {
       position: absolute;
@@ -76,12 +82,22 @@
     }
   }  
 }
-.table {
-  background-color: #ffffff;
+.list {
+  .table {
+    background-color: #ffffff;
+  }
 }
 .new {
   display: flex;
   justify-content: flex-end;
+  .modal {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    .ant-modal {
+      top: 0;
+    }
+  }
   @media screen and (max-width: 768px) {
     .new-button {
       flex: 1;

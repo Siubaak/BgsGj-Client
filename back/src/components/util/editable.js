@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Input, Icon } from 'antd'
+import { Input, Icon, Dropdown, Menu, Button } from 'antd'
 import './util.less'
 
 class EditableCell extends Component {
@@ -9,7 +9,7 @@ class EditableCell extends Component {
     editable: false,
   }
   handleChange = (e) => {
-    const newVal = e.target.value
+    const newVal = e.key || e.target.value
     this.setState({ newVal })
   }
   check = () => {
@@ -33,13 +33,29 @@ class EditableCell extends Component {
         {
           editable ?
             <div className='input'>
-              <Input.TextArea
-                value={newVal}
-                onChange={this.handleChange}
-                onPressEnter={this.check}
-                className='textarea'
-                autosize
-              />
+              {
+                this.props.dropDown ?
+                <Dropdown overlay={<Menu onClick={this.handleChange}>{this.props.menu}</Menu>}>
+                  <Button className='dropdown'>
+                    {this.props.text[newVal]} <Icon type='down' className='down'/>
+                  </Button>
+                </Dropdown>
+                :
+                this.props.textArea ?
+                <Input.TextArea
+                  value={newVal}
+                  onChange={this.handleChange}
+                  onPressEnter={this.check}
+                  autosize
+                />
+                : 
+                <Input
+                  value={newVal}
+                  onChange={this.handleChange}
+                  onPressEnter={this.check}
+                  type={this.props.type}
+                />
+              }
               <Icon
                 type='check'
                 className='icon-check'
@@ -53,7 +69,14 @@ class EditableCell extends Component {
             </div>
             :
             <div className='text'>
-              {value || ' '}
+              {
+                (
+                  this.props.text && this.props.text.length ?
+                  this.props.text[value]
+                  :
+                  value
+                ) || '无'
+              }
               <Icon
                 type='edit'
                 className='edit-icon'

@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import { Switch, Redirect, Route, Link } from 'react-router-dom'
-import { Layout, Menu, Icon, Avatar, Dropdown, Breadcrumb, message } from 'antd'
+import { Layout, Menu, Icon, Dropdown, Breadcrumb, message } from 'antd'
 import Util from './util'
 import Material from './material'
 import Meeting from './meeting'
@@ -20,25 +20,24 @@ const nomgmt = '/nomgmt'
 const ursett = '/ursett'
 const urmgmt = '/urmgmt'
 const breads = {
-  [malist]: <Breadcrumb className='nav' separator=">"><Breadcrumb.Item>物资</Breadcrumb.Item><Breadcrumb.Item>申请</Breadcrumb.Item></Breadcrumb>,
-  [mamgmt]: <Breadcrumb className='nav' separator=">"><Breadcrumb.Item>物资</Breadcrumb.Item><Breadcrumb.Item>管理</Breadcrumb.Item></Breadcrumb>,
-  [melist]: <Breadcrumb className='nav' separator=">"><Breadcrumb.Item>会议室</Breadcrumb.Item><Breadcrumb.Item>预约</Breadcrumb.Item></Breadcrumb>,
-  [memgmt]: <Breadcrumb className='nav' separator=">"><Breadcrumb.Item>会议室</Breadcrumb.Item><Breadcrumb.Item>管理</Breadcrumb.Item></Breadcrumb>,
-  [noedit]: <Breadcrumb className='nav' separator=">"><Breadcrumb.Item>通知</Breadcrumb.Item><Breadcrumb.Item>编辑</Breadcrumb.Item></Breadcrumb>,
-  [nomgmt]: <Breadcrumb className='nav' separator=">"><Breadcrumb.Item>通知</Breadcrumb.Item><Breadcrumb.Item>管理</Breadcrumb.Item></Breadcrumb>,
-  [ursett]: <Breadcrumb className='nav' separator=">"><Breadcrumb.Item>用户</Breadcrumb.Item><Breadcrumb.Item>设置</Breadcrumb.Item></Breadcrumb>,
-  [urmgmt]: <Breadcrumb className='nav' separator=">"><Breadcrumb.Item>用户</Breadcrumb.Item><Breadcrumb.Item>管理</Breadcrumb.Item></Breadcrumb>,
+  [malist]: <Breadcrumb separator=">"><Breadcrumb.Item>物资</Breadcrumb.Item><Breadcrumb.Item>申请</Breadcrumb.Item></Breadcrumb>,
+  [mamgmt]: <Breadcrumb separator=">"><Breadcrumb.Item>物资</Breadcrumb.Item><Breadcrumb.Item>管理</Breadcrumb.Item></Breadcrumb>,
+  [melist]: <Breadcrumb separator=">"><Breadcrumb.Item>会议室</Breadcrumb.Item><Breadcrumb.Item>预约</Breadcrumb.Item></Breadcrumb>,
+  [memgmt]: <Breadcrumb separator=">"><Breadcrumb.Item>会议室</Breadcrumb.Item><Breadcrumb.Item>管理</Breadcrumb.Item></Breadcrumb>,
+  [noedit]: <Breadcrumb separator=">"><Breadcrumb.Item>通知</Breadcrumb.Item><Breadcrumb.Item>编辑</Breadcrumb.Item></Breadcrumb>,
+  [nomgmt]: <Breadcrumb separator=">"><Breadcrumb.Item>通知</Breadcrumb.Item><Breadcrumb.Item>管理</Breadcrumb.Item></Breadcrumb>,
+  [ursett]: <Breadcrumb separator=">"><Breadcrumb.Item>用户</Breadcrumb.Item><Breadcrumb.Item>设置</Breadcrumb.Item></Breadcrumb>,
+  [urmgmt]: <Breadcrumb separator=">"><Breadcrumb.Item>用户</Breadcrumb.Item><Breadcrumb.Item>管理</Breadcrumb.Item></Breadcrumb>,
 }
 
 class Home extends Component {
   state = {
     collapsed: window.innerWidth <= 768,
   }
-  onCollapse = (collapsed) => {
-    this.setState({ collapsed })
-  }
-  onClick = ({ key }) => {
-    if (key === 'u1') {
+  onCollapse = collapsed => this.setState({ collapsed })
+  toggle = () => this.setState({ collapsed: !this.state.collapsed })
+  onClick = e => {
+    if (e.key === 'u1') {
       localStorage.removeItem('yhbgsback')
       message.warn('注销成功')
       setTimeout(() => window.location.href = '/login', 1000)
@@ -49,9 +48,12 @@ class Home extends Component {
       <Layout className='home'>
         <Sider
           collapsible
-          collapsed={this.state.collapsed}
-          onCollapse={this.onCollapse}
+          trigger={null}
+          breakpoint='sm'
           className='side'
+          collapsedWidth={0}
+          onCollapse={this.onCollapse}
+          collapsed={this.state.collapsed}
         >
           <Menu theme='dark' defaultSelectedKeys={['1']} mode='inline'>
             <SubMenu
@@ -85,6 +87,11 @@ class Home extends Component {
         </Sider>
         <Layout>
           <Header className='head'>
+            <Icon
+              className='icon'
+              type={this.state.collapsed ? 'menu-unfold' : 'menu-fold'}
+              onClick={this.toggle}
+            />
             {breads[window.location.pathname]
               || <div/>}
             <Dropdown overlay={
@@ -93,10 +100,8 @@ class Home extends Component {
                 <Menu.Item key='u1'>注销</Menu.Item>
               </Menu>}
               placement='bottomCenter'
-              trigger={['click']}
-              className='drop'
             >
-              <Avatar className='avatar' icon='user' />
+              <Icon className='icon' type='user'/>
             </Dropdown>
           </Header>
           <Content className='content'>

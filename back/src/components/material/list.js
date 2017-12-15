@@ -34,12 +34,13 @@ class MaList extends Component {
       </div>
     )},
     { key: `${record._id}price`, index: '总价', text: record.price },
-    { key: `${record._id}remark`, index: '备注', text: <Util.EditableCell value={record.remark || '无'}
+    { key: `${record._id}remark`, index: '备注', text: <Util.EditableCell textArea value={record.remark || '无'}
       onCheck={remark => 
         common.handle(common.api.putMatbooks({ _id: record._id, remark }),
           () => record.remark = remark,
-          this.setState.bind(this)
-    )}/> },
+          this.setState.bind(this))
+      }/>
+    },
     { key: `${record._id}operations`, index: '操作', text: (
       <Button.Group size='small'>
         {

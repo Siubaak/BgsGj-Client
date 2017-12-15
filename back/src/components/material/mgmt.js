@@ -18,37 +18,35 @@ class Mgmt extends Component {
   ]
   getExData = record => {
     const exData = [
-      { key: 'type', index: '分类' },
-      { key: 'name', index: '名称' },
-      { key: 'quantity', index: '数量' },
-      { key: 'unit', index: '单位' },
-      { key: 'price', index: '单价' },
+      { key: 'type', index: '分类', textArea: true },
+      { key: 'name', index: '名称', textArea: true  },
+      { key: 'quantity', index: '数量', type: 'number' },
+      { key: 'unit', index: '单位', textArea: true },
+      { key: 'price', index: '单价', type: 'number' },
     ].map(obj => {
       return {
         key: `${record._id}${obj.key}`,
         index: obj.index,
-        text: <Util.EditableCell value={record[obj.key] || '无'}
+        text: <Util.EditableCell textArea={obj.textArea} type={obj.type} value={record[obj.key] || '无'}
           onCheck={value => 
             common.handle(common.api.putMaterials({ _id: record._id, [obj.key]: value }),
-            () => record[obj.key] = value,
-            this.setState.bind(this)
-          )}/>
+              () => record[obj.key] = value,
+              this.setState.bind(this))}
+        />,
       }
     })
     exData.push({
       key: `${record._id}enable`, index: '启用',
-      text: (
-        <div className='mgmt-opts'>
-          <Switch checked={record.enable} size='small'
-            onChange={checked =>
-              common.handle(common.api.putMaterials({ _id: record._id, enable: checked }),
+      text: <div className='mgmt-opts'>
+        <Switch checked={record.enable} size='small'
+          onChange={checked =>
+            common.handle(common.api.putMaterials({ _id: record._id, enable: checked }),
               () => record.enable = checked,
-              this.setState.bind(this)
-          )}/>
-          <Icon type='delete' className='delete'
-            onClick={() => this.handleDelete(record)}/>
-        </div>
-      )
+              this.setState.bind(this))
+        }/>
+        <Icon type='delete' className='delete'
+          onClick={() => this.handleDelete(record)}/>
+      </div>,
     })
     return exData
   }
@@ -76,7 +74,7 @@ class Mgmt extends Component {
   handleDelete = record => {
     Modal.confirm({
       title: `确定删除${record.name}？`,
-      content: `分类为${record.type}，数量为${record.quantity}${record.unit}，单价为${record.price}。`,
+      content: `分类为${record.type}，数量为${record.quantity}${record.unit}，单价为￥${record.price}。`,
       okText: '删除',
       okType: 'danger',
       cancelText: '取消',
@@ -101,7 +99,7 @@ class Mgmt extends Component {
   }
   render() {
     return (
-      <div>
+      <div className='material'>
         <Util.List 
           state={this.state}
           setState={this.setState.bind(this)}

@@ -51,11 +51,12 @@ class List extends Component {
   render() {
     const { data, pagination, loading } = this.props.state
     return (
+      <div className='list'>
         <Table 
           className='table' 
           dataSource={data}
           loading={loading}
-          scroll={{ x: 400 }}
+          scroll={{ x: 375 }}
           pagination={pagination}
           onChange={this.handleChange}
           columns={this.props.columns}
@@ -74,6 +75,7 @@ class List extends Component {
               })
             }}/> : null}
         />
+      </div>
     )
   }
 }

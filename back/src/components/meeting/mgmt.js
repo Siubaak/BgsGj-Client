@@ -17,30 +17,32 @@ class Mgmt extends Component {
   }
   render() {
     return (
-      <Table
-        pagination={false}
-        showHeader={false}
-        className='table'
-        loading={this.state.loading}
-        columns={[
-          { title: '', key: 'index', dataIndex: 'index', width: 100 },
-          { title: '', key: 'text', dataIndex: 'text' },
-        ]}
-        dataSource={[
-          { key: `memgmtenable`, index: '会议室', text: <Switch checked={this.state.enable} size='small'
-            onChange={checked => {
-              this.setState({ loading: true })
-              common.handle(common.api.putMeetings({ enable: checked, proj: this.state.proj }),
-              () => this.setState({ enable: checked, loading: false }))
-            }}/> },
-          { key: `memgmtproj`, index: '投影仪', text: <Switch checked={this.state.proj} size='small'
-            onChange={checked => {
-              this.setState({ loading: true })
-              common.handle(common.api.putMeetings({ enable: this.state.enable, proj: checked }),
-              () => this.setState({ proj: checked, loading: false }))
-            }}/> },
-        ]}
-      />
+      <div className='meeting'>
+        <Table
+          pagination={false}
+          showHeader={false}
+          className='table'
+          loading={this.state.loading}
+          columns={[
+            { title: '', key: 'index', dataIndex: 'index' },
+            { title: '', key: 'text', dataIndex: 'text' },
+          ]}
+          dataSource={[
+            { key: `memgmtenable`, index: '会议室', text: <Switch checked={this.state.enable} size='small'
+              onChange={checked => {
+                this.setState({ loading: true })
+                common.handle(common.api.putMeetings({ enable: checked, proj: this.state.proj }),
+                  () => this.setState({ enable: checked, loading: false }))
+              }}/> },
+            { key: `memgmtproj`, index: '投影仪', text: <Switch checked={this.state.proj} size='small'
+              onChange={checked => {
+                this.setState({ loading: true })
+                common.handle(common.api.putMeetings({ enable: this.state.enable, proj: checked }),
+                  () => this.setState({ proj: checked, loading: false }))
+              }}/> },
+          ]}
+        />
+      </div>
     )
   }
 }

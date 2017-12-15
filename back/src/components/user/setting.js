@@ -6,10 +6,11 @@ import './user.less'
 
 class Setting extends Component {
   state = {
-    oPasswd: '',
-    nPasswd: '',
-    ncPasswd: '',
-    proj: '',
+    oPass: '',
+    nPass: '',
+    ncPass: '',
+    name: '',
+    phone: '',
     loading: false,
   }
   getFormItems = getFieldDecorator => [
@@ -30,52 +31,59 @@ class Setting extends Component {
       }
     </Form.Item>
   )
-  componentDidMount() {}
+  componentDidMount() {
+    common.handle(common.api.getUsers({ account: 'test' }), res => {
+      const { name, phone } = res.body
+      this.setState({ name, phone })
+    }, this.setState.bind(this))
+  }
   handleUpdate = (user, done) => common.handle(common.api.putUsers(user), done)
   render() {
     return (
-      <Table
-        pagination={false}
-        showHeader={false}
-        className='table'
-        loading={this.state.loading}
-        columns={[
-          { title: '', key: 'index', dataIndex: 'index', width: 100 },
-          { title: '', key: 'text', dataIndex: 'text' },
-        ]}
-        dataSource={[
-          {
-            key: 'ursettrename',
-            index: '负责人',
-            text: <Util.EditableCell value={'曾颖' || '无'}
-              onCheck={value => 
-                common.handle(common.api.putUsers({ }),
-                () => {},
-                this.setState.bind(this)
-            )}/>,
-          },
-          {
-            key: 'ursettrephone',
-            index: '联系方式',
-            text: <Util.EditableCell value={'13578947384' || '无'}
-              onCheck={value => 
-                common.handle(common.api.putUsers({ }),
-                () => {},
-                this.setState.bind(this)
-            )}/>,
-          },
-          {
-            key: 'ursettpassword',
-            index: '更新信息',
-            text: <Util.New
-              btnText='更改密码'
-              layout='vertical'
-              onCreate={this.handleUpdate}
-              getFormItems={this.getFormItems}
-            />,
-          },
-        ]}
-      />
+      <div className='user'>
+        <Table
+          className='table'
+          pagination={false}
+          showHeader={false}
+          loading={this.state.loading}
+          columns={[
+            { title: '', key: 'index', dataIndex: 'index', width: 100 },
+            { title: '', key: 'text', dataIndex: 'text' },
+          ]}
+          dataSource={[
+            {
+              key: 'ursettname',
+              index: '主任',
+              text: <Util.EditableCell value={this.state.name || '无'}
+                // onCheck={name => 
+                //   common.handle(common.api.putUsers({ _id: record._id, name }),
+                //     () => record.name = name,
+                //     this.setState.bind(this))}
+              />,
+            },
+            {
+              key: 'ursettphone',
+              index: '手机',
+              text: <Util.EditableCell value={this.state.phone || '无'}
+                // onCheck={phone =>
+                //   common.handle(common.api.putUsers({ _id: record._id, phone }),
+                //     () => record.phone = phone,
+                //     this.setState.bind(this))}
+              />,
+            },
+            {
+              key: 'ursettpassword',
+              index: '更新信息',
+              text: <Util.New
+                btnText='更改密码'
+                layout='vertical'
+                onCreate={this.handleUpdate}
+                getFormItems={this.getFormItems}
+              />,
+            },
+          ]}
+        />
+      </div>
     )
   }
 }
