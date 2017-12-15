@@ -24,7 +24,6 @@ export default {
   // 用户
   getUsers(params) {
     return request.get(resources.users)
-      .set('Authorization', getToken())
       .query(params)
   },
   putUsers(params) {
@@ -35,7 +34,6 @@ export default {
   // 通知
   getNotes(params) {
     return request.get(resources.notes)
-      .set('Authorization', getToken())
       .query(params)
   },
   postNotes(params) {
@@ -45,6 +43,11 @@ export default {
   },
   putNotes(params) {
     return request.put(resources.notes)
+      .set('Authorization', getToken())
+      .send(params)
+  },
+  delNotes(params) {
+    return request.del(resources.notes)
       .set('Authorization', getToken())
       .send(params)
   },

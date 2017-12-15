@@ -30,9 +30,8 @@ class Setting extends Component {
       }
     </Form.Item>
   )
-  handleUpdate = (user, done) => {
-    common.handle(common.api.putUsers(user), done)
-  }
+  componentDidMount() {}
+  handleUpdate = (user, done) => common.handle(common.api.putUsers(user), done)
   render() {
     return (
       <Table
@@ -66,7 +65,7 @@ class Setting extends Component {
             )}/>,
           },
           {
-            key: `ursettpassword`,
+            key: 'ursettpassword',
             index: '更新信息',
             text: <Util.New
               btnText='更改密码'

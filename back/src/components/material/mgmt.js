@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Switch, Form, Input, Icon } from 'antd'
+import { Switch, Form, Input, Icon, Modal } from 'antd'
 import common from '../../common'
 import Util from '../util'
 import './material.less'
@@ -33,8 +33,8 @@ class Mgmt extends Component {
             () => record[obj.key] = value,
             this.setState.bind(this)
           )}/>
-        }
-      })
+      }
+    })
     exData.push({
       key: `${record._id}enable`, index: '启用',
       text: (
@@ -74,21 +74,30 @@ class Mgmt extends Component {
   )
   handleCreate = (material, done) => common.handle(common.api.postMaterials(material), done)
   handleDelete = record => {
-    common.handle(common.api.delMaterials({ _id: record._id }), () => {
-        const { pagination } = this.state
-        common.handle(common.api.getMaterials({
-          skip: pagination.pageSize * (pagination.current - 1),
-          limit: pagination.pageSize,
-        }), res => {
-          const { total, list } = res.body
-          const pager = { ...pagination }
-          pager.total = total
-          this.setState({
-            data: list,
-            pagination: pager,
-          })
+    Modal.confirm({
+      title: `确定删除${record.name}？`,
+      content: `分类为${record.type}，数量为${record.quantity}${record.unit}，单价为${record.price}。`,
+      okText: '删除',
+      okType: 'danger',
+      cancelText: '取消',
+      onOk: () => 
+        common.handle(common.api.delMaterials({ _id: record._id }), () => {
+          const { pagination } = this.state
+          common.handle(common.api.getMaterials({
+            skip: pagination.pageSize * (pagination.current - 1),
+            limit: pagination.pageSize,
+          }), res => {
+            const { total, list } = res.body
+            const pager = { ...pagination }
+            pager.total = total
+            this.setState({
+              data: list,
+              pagination: pager,
+            })
+          }, this.setState.bind(this))
         }, this.setState.bind(this))
-      }, this.setState.bind(this))
+      },
+    );
   }
   render() {
     return (

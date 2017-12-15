@@ -63,9 +63,7 @@ class List extends Component {
           expandedRowRender={
             typeof this.props.getExData === 'function'
             ? this.getExTable
-            : typeof this.props.getExDesc === 'function'
-              ? this.props.getExDesc
-              : null
+            : null
           }
           footer={this.props.new ? () => <New {...this.props.new}
             onChange={() => {

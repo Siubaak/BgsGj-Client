@@ -1,8 +1,14 @@
-.mgmt-edit {
+.mgmt-opts {
   display: flex;
+  justify-content: space-between;
   align-items: center;
   .delete {
     width: 20px;
+    cursor: pointer;
+    transition: color .2s;
+    &:hover {
+    color: #ff4d4f;
+    }
   }
 }
 .textarea {

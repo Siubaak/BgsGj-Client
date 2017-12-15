@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import common from '../../common'
 import Util from '../util'
-import { Form, Input, Icon } from 'antd'
+import { Form, Input, Icon, Switch, Modal } from 'antd'
 import './note.less'
 
 class Mgmt extends Component {
@@ -11,21 +11,42 @@ class Mgmt extends Component {
     loading: false,
   }
   columns = [
-    { title: '标题', key: 'ntmgmttitle', dataIndex: 'title', render: text => text.substring(0, 4).length === text.length ? text : text.substring(0, 4) + '...' },
-    { title: '内容', key: 'ntmgmtcontent', dataIndex: 'content', render: text => text.substring(0, 14).length === text.length ? text : text.substring(0, 14) + '...' },
+    { title: '标题', key: 'ntmgmttitle', dataIndex: 'title', render: text => text.substring(0, 25).length === text.length ? text : text.substring(0, 25) + '...' },
     { title: '更新', key: 'ntmgmtupdated', dataIndex: 'updated', render: text => text.substring(0, 10) },
   ]
-  getExDesc = record => (
-    <div className='mgmt-edit'>
-      <Util.EditableCell value={record.content || '无'} style={{flex: 1}}
-        onCheck={content => 
-          common.handle(common.api.putNotes({ _id: record._id, content }),
-          () => record.content = content,
-          this.setState.bind(this))}/>
-      <Icon type='delete' className='delete'
-        onClick={() => this.handleDelete(record)}/>
-    </div>
-  )
+  getExData = record => {
+    const exData = [
+      { key: 'title', index: '标题' },
+      { key: 'content', index: '内容' },
+    ].map(obj => {
+      return {
+        key: `${record._id}${obj.key}`,
+        index: obj.index,
+        text: <Util.EditableCell value={record[obj.key] || '无'}
+          onCheck={value => 
+            common.handle(common.api.putMaterials({ _id: record._id, [obj.key]: value }),
+            () => record[obj.key] = value,
+            this.setState.bind(this)
+          )}/>
+      }
+    })
+    exData.push({
+      key: `${record._id}enable`, index: '显示',
+      text: (
+        <div className='mgmt-opts'>
+          <Switch checked={record.enable} size='small'
+            onChange={checked =>
+              common.handle(common.api.putNotes({ _id: record._id, enable: checked }),
+              () => record.enable = checked,
+              this.setState.bind(this)
+          )}/>
+          <Icon type='delete' className='delete'
+            onClick={() => this.handleDelete(record)}/>
+        </div>
+      )
+    })
+    return exData
+  }
   getFormItems = getFieldDecorator => [
     { key: 'title', label: '标题', min: 1, max: 3 },
     { key: 'content', label: '内容', min: 5, max: 10 },
@@ -44,6 +65,32 @@ class Mgmt extends Component {
     </Form.Item>
   )
   handleCreate = (note, done) => common.handle(common.api.postNotes(note), done)
+  handleDelete = record => {
+    Modal.confirm({
+      title: `确定删除${record.title.substring(0, 10).length === record.title.length ? record.title : record.title.substring(0, 10) + '...'}？`,
+      content: `更新时间为${record.updated.substring(0, 10)}，目前${record.enable ? '显示' : '不显示'}。`,
+      okText: '删除',
+      okType: 'danger',
+      cancelText: '取消',
+      onOk: () => 
+        common.handle(common.api.delNotes({ _id: record._id }), () => {
+          const { pagination } = this.state
+          common.handle(common.api.getNotes({
+            skip: pagination.pageSize * (pagination.current - 1),
+            limit: pagination.pageSize,
+          }), res => {
+            const { total, list } = res.body
+            const pager = { ...pagination }
+            pager.total = total
+            this.setState({
+              data: list,
+              pagination: pager,
+            })
+          }, this.setState.bind(this))
+        }, this.setState.bind(this))
+      },
+    );
+  }
   render() {
     return (
       <Util.List 
@@ -51,7 +98,7 @@ class Mgmt extends Component {
         setState={this.setState.bind(this)}
         columns={this.columns}
         api={common.api.getNotes}
-        getExDesc={this.getExDesc}
+        getExData={this.getExData}
         new={{btnText: '新建通知', onCreate: this.handleCreate, getFormItems: this.getFormItems}}
       />
     )

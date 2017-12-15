@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Badge, Button } from 'antd'
+import { Badge, Button, Modal } from 'antd'
 import common from '../../common'
 import Util from '../util'
 import './meeting.less'
@@ -37,10 +37,18 @@ class MeList extends Component {
           ].map(c =>
             <Button key={`${record._id}btn${c.c}`} type={c.tp} disabled={record.cond !== c.d} 
               onClick={() =>
-                common.handle(common.api.putMetbooks({ _id: record._id, cond: c.c }),
-                  () => record.cond = c.c,
-                  this.setState.bind(this)
-            )}>
+                Modal.confirm({
+                  title: `确定${c.t}？`,
+                  content: `活动为${record.activity}，目前状态为${this.cond[record.cond].text}。申请人为${record.user.account}的${record.name}(${record.phone})。`,
+                  okText: c.t,
+                  okType: c.tp,
+                  cancelText: '取消',
+                  onOk: () =>
+                    common.handle(common.api.putMetbooks({ _id: record._id, cond: c.c }),
+                      () => record.cond = c.c,
+                      this.setState.bind(this))
+                })
+            }>
               {c.t}
             </Button>
           )
