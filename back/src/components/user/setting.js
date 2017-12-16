@@ -14,9 +14,9 @@ class Setting extends Component {
     loading: false,
   }
   getFormItems = getFieldDecorator => [
-    { key: 'opasswd', label: '原密码', type: 'text' },
-    { key: 'npasswd', label: '新密码', type: 'text' },
-    { key: 'ncpasswd', label: '确认密码', type: 'text' },
+    { key: 'opasswd', label: '原密码', type: 'lock' },
+    { key: 'npasswd', label: '新密码', type: 'lock' },
+    { key: 'ncpasswd', label: '确认密码', type: 'lock' },
   ].map(obj => 
     <Form.Item
       label={obj.label}
@@ -42,7 +42,7 @@ class Setting extends Component {
     return (
       <div className='user'>
         <Table
-          className='table'
+          className='sett-table'
           pagination={false}
           showHeader={false}
           loading={this.state.loading}

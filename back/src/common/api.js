@@ -29,6 +29,11 @@ export default {
       .set('Authorization', getToken())
       .query(params)
   },
+  postUsers(params) {
+    return request.post(resources.users)
+      .set('Authorization', getToken())
+      .send(params)
+  },
   putUsers(params) {
     return request.put(resources.users)
       .set('Authorization', getToken())

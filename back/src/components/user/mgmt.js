@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import common from '../../common'
 import Util from '../util'
-import { Form, Input, Icon, Modal, Menu } from 'antd'
+import { Form, Input, Icon, Modal, Menu, Dropdown, Button } from 'antd'
 import './user.less'
 
 class PassBoxFom extends Component {
@@ -41,6 +41,7 @@ class Mgmt extends Component {
     pagination: { size: 'small', pageSize: 10, current: 1 },
     loading: false,
     visible: false,
+    level: 0,
   }
   level = ['未审核用户', '研分会用户', '研会及研团委用户', '普通管理员', '全局管理员']
   columns = [
@@ -61,7 +62,7 @@ class Mgmt extends Component {
         index: obj.index,
         text: <Util.EditableCell
           dropDown={obj.dropDown} textArea={obj.textArea}
-          menu={obj.menu} text={obj.text} type={obj.type} value={record[obj.key] || '无'}
+          menu={obj.menu} text={obj.text} type={obj.type} value={obj.dropDown ? record[obj.key] : record[obj.key] || '无'}
           onCheck={value => 
             common.handle(common.api.putUsers({ _id: record._id, [obj.key]: value }),
               () => record[obj.key] = value,
@@ -90,12 +91,9 @@ class Mgmt extends Component {
     return exData
   }
   getFormItems = getFieldDecorator => [
+    { key: 'level', label: '分类', type: 'text', dropDown: true },
     { key: 'account', label: '账号', type: 'text' },
-    { key: 'password', label: '密码', type: 'test' },
-    { key: 'wallet', label: '钱包', type: 'text' },
-    { key: 'level', label: '分类', type: 'text' },
-    { key: 'name', label: '部长', type: 'text' },
-    { key: 'phone', label: '手机', type: 'number' },
+    { key: 'password', label: '密码', type: 'text' },
   ].map(obj => 
     <Form.Item
       label={obj.label}
@@ -104,13 +102,26 @@ class Mgmt extends Component {
       key={`${obj.key}new`}
     >
       {
+        obj.dropDown ?
+        <Dropdown
+          overlay={
+            <Menu onClick={e => this.setState({ level: e.key })}>
+              {this.level.map((d, i) => <Menu.Item key={i}>{d}</Menu.Item>)}
+            </Menu>
+          }
+        >
+          <Button className='dropdown'>
+            {this.level[this.state.level]} <Icon type='down' className='down'/>
+          </Button>
+        </Dropdown>
+        :
         getFieldDecorator(obj.key, {
           rules: [{ required: true, message: `请输入${obj.label}` }],
         })(<Input type={obj.type}/>)
       }
     </Form.Item>
   )
-  handleCreate = (note, done) => common.handle(common.api.postNotes(note), done)
+  handleCreate = (user, done) => common.handle(common.api.postUsers(user), done)
   handleDelete = record => {
     common.handle(common.api.delUsers({ _id: record._id }), () => {
       const { pagination } = this.state
