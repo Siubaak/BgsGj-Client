@@ -11,111 +11,43 @@ const resources = {
   meetings: apiUrl + '/meetings',
   metbooks: apiUrl + '/metbooks',
 }
-const getToken = () => {
-  if (localStorage.getItem('yhbgsback')) {
-    return 'Bearer ' + localStorage.getItem('yhbgsback').replace(/(^\\")|(\\"$)/g, '')
+const sendReq = (method, uri, params)=> {
+  let token
+  try {
+    token = 'Bearer ' + localStorage.getItem('yhbgsback').replace(/(^\\")|(\\"$)/g, '')
+  } catch (err) {
+    token = undefined
   }
+  return request[method](uri)
+    .set('Authorization', token)
+    .send(params)
 }
 
 export default {
   // Token
-  postTokens(params) {
-    return request.post(resources.token)
-      .send(params)
-  },
+  postTokens(params) { return sendReq('post', resources.token, params) },
   // 用户
-  getUsers(params) {
-    return request.get(resources.ausers)
-      .set('Authorization', getToken())
-      .query(params)
-  },
-  postUsers(params) {
-    return request.post(resources.users)
-      .set('Authorization', getToken())
-      .send(params)
-  },
-  putUsers(params) {
-    return request.put(resources.users)
-      .set('Authorization', getToken())
-      .send(params)
-  },
-  delUsers(params) {
-    return request.del(resources.users)
-      .set('Authorization', getToken())
-      .send(params)
-  },
+  getUsers(params) { return sendReq('get', resources.ausers, params) },
+  postUsers(params) { return sendReq('post', resources.users, params) },
+  putUsers(params) { return sendReq('put', resources.users, params) },
+  delUsers(params) { return sendReq('del', resources.users, params) },
   // 通知
-  getNotes(params) {
-    return request.get(resources.anotes)
-      .set('Authorization', getToken())
-      .query(params)
-  },
-  postNotes(params) {
-    return request.post(resources.notes)
-      .set('Authorization', getToken())
-      .send(params)
-  },
-  putNotes(params) {
-    return request.put(resources.notes)
-      .set('Authorization', getToken())
-      .send(params)
-  },
-  delNotes(params) {
-    return request.del(resources.notes)
-      .set('Authorization', getToken())
-      .send(params)
-  },
+  getNotes(params) { return sendReq('get', resources.anotes, params) },
+  postNotes(params) { return sendReq('post', resources.notes, params) },
+  putNotes(params) { return sendReq('put', resources.notes, params) },
+  delNotes(params) { return sendReq('del', resources.notes, params) },
   // 物资
-  getMaterials(params) {
-    return request.get(resources.materials)
-      .set('Authorization', getToken())
-      .query(params)
-  },
-  postMaterials(params) {
-    return request.post(resources.materials)
-      .set('Authorization', getToken())
-      .send(params)
-  },
-  putMaterials(params) {
-    return request.put(resources.materials)
-      .set('Authorization', getToken())
-      .send(params)
-  },
-  delMaterials(params) {
-    return request.del(resources.materials)
-      .set('Authorization', getToken())
-      .send(params)
-  },
+  getMaterials(params) { return sendReq('get', resources.materials, params) },
+  postMaterials(params) { return sendReq('post', resources.materials, params) },
+  putMaterials(params) { return sendReq('put', resources.materials, params) },
+  delMaterials(params) { return sendReq('del', resources.materials, params) },
   // 物资申请
-  getMatbooks(params) {
-    return request.get(resources.matbooks)
-      .set('Authorization', getToken())
-      .query(params)
-  },
-  putMatbooks(params) {
-    return request.put(resources.matbooks)
-      .set('Authorization', getToken())
-      .send(params)
-  },
+  getMatbooks(params) { return sendReq('get', resources.matbooks, params) },
+  putMatbooks(params) { return sendReq('put', resources.matbooks, params) },
   // 会议室
-  getMeetings() {
-    return request.get(resources.meetings)
-      .set('Authorization', getToken())
-  },
-  putMeetings(params) {
-    return request.put(resources.meetings)
-      .set('Authorization', getToken())
-      .send(params)
-  },
+  getMeetings(params) { return sendReq('get', resources.meetings, params) },
+  putMeetings(params) { return sendReq('put', resources.meetings, params) },
   // 会议室预约
-  getMetbooks(params) {
-    return request.get(resources.metbooks)
-      .set('Authorization', getToken())
-      .query(params)
-  },
-  putMetbooks(params) {
-    return request.put(resources.metbooks)
-      .set('Authorization', getToken())
-      .send(params)
-  },
+  getMetbooks(params) { return sendReq('get', resources.metbooks, params) },
+  putMetbooks(params) { return sendReq('put', resources.metbooks, params) },
 }

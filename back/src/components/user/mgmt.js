@@ -1,40 +1,8 @@
 import React, { Component } from 'react'
 import common from '../../common'
 import Util from '../util'
-import { Form, Input, Icon, Modal, Menu, Dropdown, Button } from 'antd'
+import { Form, Input, Icon, Modal, Menu } from 'antd'
 import './user.less'
-
-class PassBoxFom extends Component {
-  render() {
-    const { getFieldDecorator } = this.props.form
-    return (
-      <Form>
-        {
-          [
-            { key: 'oPass', label: '密码', type: 'password', placeholder: '此全局管理员密码' },
-            { key: 'cPass', label: '确认', type: 'password', placeholder: '确认全局管理员密码'  },
-          ].map(obj =>
-            <Form.Item
-              label={obj.label}
-              labelCol={{span: 5}}
-              wrapperCol={{span: 16}}
-              key={obj.key}
-            >
-              {
-                getFieldDecorator(obj.key, {
-                  rules: [{ required: true, message: `请输入${obj.label}` }],
-                })(<Input type={obj.type} placeholder={obj.placeholder}/>)
-              }
-            </Form.Item>
-          )
-        }
-      </Form>
-    )
-  }
-}
-
-const PassBox = Form.create()(PassBoxFom)
-
 class Mgmt extends Component {
   state = {
     data: [],
@@ -45,24 +13,22 @@ class Mgmt extends Component {
   }
   level = ['未审核用户', '研分会用户', '研会及研团委用户', '普通管理员', '全局管理员']
   columns = [
-    { title: '账号', key: 'urmgmtaccount', dataIndex: 'account' },
     { title: '分类', key: 'urmgmtlevel', dataIndex: 'level', render: text => this.level[text] },
+    { title: '账号', key: 'urmgmtaccount', dataIndex: 'account' },
   ]
   getExData = record => {
     const exData = [
-      { key: 'account', index: '账号', textArea: true },
       { key: 'level', index: '分类', dropDown: true,
         text: this.level,
         menu: this.level.map((d, i) => <Menu.Item key={i}>{d}</Menu.Item>)},
-      { key: 'name', index: '部长', textArea: true },
-      { key: 'phone', index: '手机', type: 'number'  },
+      { key: 'account', index: '账号', type: 'text' },
     ].map(obj => {
       return {
         key: `${record._id}${obj.key}`,
         index: obj.index,
         text: <Util.EditableCell
-          dropDown={obj.dropDown} textArea={obj.textArea}
-          menu={obj.menu} text={obj.text} type={obj.type} value={obj.dropDown ? record[obj.key] : record[obj.key] || '无'}
+          dropDown={obj.dropDown} menu={obj.menu} text={obj.text}
+          type={obj.type} value={obj.dropDown ? record[obj.key] : record[obj.key] || '无'}
           onCheck={value => 
             common.handle(common.api.putUsers({ _id: record._id, [obj.key]: value }),
               () => record[obj.key] = value,
@@ -71,12 +37,25 @@ class Mgmt extends Component {
       }
     })
     if (record.level < 3) {
-      exData.push({
-        key: `${record._id}wallet`,
-        index: '钱包',
-        text: <Util.EditableCell value={`￥${record.wallet}` || '无'}
-        onCheck={value => this.setState({ visible: true, user: { _id: record._id, wallet: value } })}/>
-      })
+      exData.push(
+        ...[
+          { key: 'name', index: '部长', type: 'text' },
+          { key: 'phone', index: '手机', type: 'number' },
+          { key: 'wallet', index: '钱包', type: 'number'  },
+        ].map(obj => {
+          return {
+            key: `${record._id}${obj.key}`,
+            index: obj.index,
+            text: <Util.EditableCell
+              type={obj.type} value={record[obj.key] || '无'}
+              onCheck={value => 
+                common.handle(common.api.putUsers({ _id: record._id, [obj.key]: value }),
+                  () => record[obj.key] = value,
+                  this.setState.bind(this))}
+            />
+          }
+        })
+      )
     }
     exData.push({
       key: `${record._id}delete`, index: '删除',
@@ -91,7 +70,6 @@ class Mgmt extends Component {
     return exData
   }
   getFormItems = getFieldDecorator => [
-    { key: 'level', label: '分类', type: 'text', dropDown: true },
     { key: 'account', label: '账号', type: 'text' },
     { key: 'password', label: '密码', type: 'text' },
   ].map(obj => 
@@ -102,19 +80,6 @@ class Mgmt extends Component {
       key={`${obj.key}new`}
     >
       {
-        obj.dropDown ?
-        <Dropdown
-          overlay={
-            <Menu onClick={e => this.setState({ level: e.key })}>
-              {this.level.map((d, i) => <Menu.Item key={i}>{d}</Menu.Item>)}
-            </Menu>
-          }
-        >
-          <Button className='dropdown'>
-            {this.level[this.state.level]} <Icon type='down' className='down'/>
-          </Button>
-        </Dropdown>
-        :
         getFieldDecorator(obj.key, {
           rules: [{ required: true, message: `请输入${obj.label}` }],
         })(<Input type={obj.type}/>)
@@ -123,21 +88,34 @@ class Mgmt extends Component {
   )
   handleCreate = (user, done) => common.handle(common.api.postUsers(user), done)
   handleDelete = record => {
-    common.handle(common.api.delUsers({ _id: record._id }), () => {
-      const { pagination } = this.state
-      common.handle(common.api.getUsers({
-        skip: pagination.pageSize * (pagination.current - 1),
-        limit: pagination.pageSize,
-      }), res => {
-        const { total, list } = res.body
-        const pager = { ...pagination }
-        pager.total = total
-        this.setState({
-          data: list,
-          pagination: pager,
-        })
-      }, this.setState.bind(this))
-    }, this.setState.bind(this))
+    Modal.confirm({
+      title: `确定删除${record.account}？`,
+      content:
+        record.level < 3 ? 
+        `用户分类为${this.level[record.level]}，部长为${record.name || '无'}，手机为${record.phone || '无'}，目前钱包剩余￥${record.wallet || 0}。`
+        :
+        `管理员分类为${this.level[record.level]}。`,
+      okText: '删除',
+      okType: 'danger',
+      cancelText: '取消',
+      onOk: () => 
+        common.handle(common.api.delUsers({ _id: record._id }), () => {
+          const { pagination } = this.state
+          common.handle(common.api.getUsers({
+            skip: pagination.pageSize * (pagination.current - 1),
+            limit: pagination.pageSize,
+          }), res => {
+            const { total, list } = res.body
+            const pager = { ...pagination }
+            pager.total = total
+            this.setState({
+              data: list,
+              pagination: pager,
+            })
+          }, this.setState.bind(this))
+        }, this.setState.bind(this))
+      },
+    );
   }
   render() {
     return (
@@ -150,21 +128,6 @@ class Mgmt extends Component {
           getExData={this.getExData}
           new={{btnText: '新建用户', onCreate: this.handleCreate, getFormItems: this.getFormItems}}
         />
-        <Modal
-          okText='删除'
-          title='请输入密码'
-          onOk={this.handleDelete}
-          onCancel={() => {
-            this.form.resetFields()
-            this.setState({ visible: false })
-          }}
-          visible={this.state.visible}
-        >
-          <PassBox
-            ref={form => this.form = form}
-            visible={this.state.visible}
-          />
-        </Modal>
       </div>
     )
   }

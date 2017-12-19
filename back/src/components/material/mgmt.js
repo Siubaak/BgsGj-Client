@@ -18,16 +18,16 @@ class Mgmt extends Component {
   ]
   getExData = record => {
     const exData = [
-      { key: 'type', index: '分类', textArea: true },
-      { key: 'name', index: '名称', textArea: true  },
+      { key: 'type', index: '分类', type: 'text' },
+      { key: 'name', index: '名称', type: 'text'  },
       { key: 'quantity', index: '数量', type: 'number' },
-      { key: 'unit', index: '单位', textArea: true },
+      { key: 'unit', index: '单位', type: 'text' },
       { key: 'price', index: '单价', type: 'number' },
     ].map(obj => {
       return {
         key: `${record._id}${obj.key}`,
         index: obj.index,
-        text: <Util.EditableCell textArea={obj.textArea} type={obj.type} value={record[obj.key] || '无'}
+        text: <Util.EditableCell type={obj.type} value={record[obj.key] || '无'}
           onCheck={value => 
             common.handle(common.api.putMaterials({ _id: record._id, [obj.key]: value }),
               () => record[obj.key] = value,
