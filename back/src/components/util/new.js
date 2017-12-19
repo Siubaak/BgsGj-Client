@@ -33,23 +33,18 @@ class New extends Component {
   handleCreate = () => {
     this.form.validateFields((err, values) => {
       if (err) return
-      this.setState({ 
-        title: '正在新建...',
-        confirmLoading: true,
-      })
+      this.setState({ confirmLoading: true })
       if (typeof this.props.onCreate === 'function') {
         this.props.onCreate(values, () => {
           this.setState({
-            title: this.props.btnText,
             confirmLoading: false,
             visible: false,
           })
           this.form.resetFields()
-          this.props.onChange()
+          if (typeof this.props.onChange === 'function') this.props.onChange()
         })
       } else {
         this.setState({
-          title: this.props.btnText,
           confirmLoading: false,
           visible: false,
         })
@@ -64,6 +59,7 @@ class New extends Component {
         <Button type='default' className='new-button' onClick={this.showModal}>{this.props.btnText}</Button>
         <Modal
           okText='确定'
+          cancelText='取消'
           wrapClassName='modal'
           title={this.state.title}
           onOk={this.handleCreate}

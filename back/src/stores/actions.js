@@ -18,9 +18,17 @@ export const login = (user, done) => {
         } else {
           const { token } = res.body
           localStorage.setItem(localKey, token)
-          dispatch({ type: 'LOGIN', token })
-          message.success('登录成功')
-          setTimeout(() => window.location.replace('/'), 1000)
+          try {
+            const payload = JSON.parse(window.atob(token.split('.')[1]))
+            if (payload.level < 3) {
+              message.error('用户不存在')
+            } else {
+              message.success('登录成功')
+              dispatch({ type: 'LOGIN', payload })
+            }
+          } catch (e) {
+            message.error('用户不存在')
+          }
         }
       }, 600)
     })

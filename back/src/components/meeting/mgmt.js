@@ -28,17 +28,17 @@ class Mgmt extends Component {
             { title: '', key: 'text', dataIndex: 'text' },
           ]}
           dataSource={[
-            { key: `memgmtenable`, index: '会议室', text: <Switch checked={this.state.enable} size='small'
-              onChange={checked => {
-                this.setState({ loading: true })
-                common.handle(common.api.putMeetings({ enable: checked, proj: this.state.proj }),
-                  () => this.setState({ enable: checked, loading: false }))
+            { key: `memgmtenable`, index: '会议室', text: <Switch checked={this.state.enable}
+              onChange={enable => {
+                common.handle(common.api.putMeetings({ enable, proj: this.state.proj }),
+                  () => this.setState({ enable },
+                  this.setState.bind(this)))
               }}/> },
-            { key: `memgmtproj`, index: '投影仪', text: <Switch checked={this.state.proj} size='small'
-              onChange={checked => {
-                this.setState({ loading: true })
-                common.handle(common.api.putMeetings({ enable: this.state.enable, proj: checked }),
-                  () => this.setState({ proj: checked, loading: false }))
+            { key: `memgmtproj`, index: '投影仪', text: <Switch checked={this.state.proj}
+              onChange={proj => {
+                common.handle(common.api.putMeetings({ enable: this.state.enable, proj }),
+                  () => this.setState({ proj },
+                  this.setState.bind(this)))
               }}/> },
           ]}
         />

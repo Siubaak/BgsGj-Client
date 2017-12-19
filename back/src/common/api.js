@@ -18,21 +18,23 @@ const sendReq = (method, uri, params)=> {
   } catch (err) {
     token = undefined
   }
-  return request[method](uri)
+  const req = request[method](uri)
     .set('Authorization', token)
-    .send(params)
+  if (method === 'get') return req.query(params)
+  else return req.send(params)
 }
 
 export default {
   // Token
   postTokens(params) { return sendReq('post', resources.token, params) },
   // 用户
-  getUsers(params) { return sendReq('get', resources.ausers, params) },
+  getAllUsers(params) { return sendReq('get', resources.ausers, params) },
+  getUsers(params) { return sendReq('get', resources.users, params) },
   postUsers(params) { return sendReq('post', resources.users, params) },
   putUsers(params) { return sendReq('put', resources.users, params) },
   delUsers(params) { return sendReq('del', resources.users, params) },
   // 通知
-  getNotes(params) { return sendReq('get', resources.anotes, params) },
+  getAllNotes(params) { return sendReq('get', resources.anotes, params) },
   postNotes(params) { return sendReq('post', resources.notes, params) },
   putNotes(params) { return sendReq('put', resources.notes, params) },
   delNotes(params) { return sendReq('del', resources.notes, params) },

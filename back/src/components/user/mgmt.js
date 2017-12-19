@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import common from '../../common'
 import Util from '../util'
+import { connect } from 'react-redux'
 import { Form, Input, Icon, Modal, Menu } from 'antd'
 import './user.less'
 class Mgmt extends Component {
@@ -17,6 +18,7 @@ class Mgmt extends Component {
     { title: '账号', key: 'urmgmtaccount', dataIndex: 'account' },
   ]
   getExData = record => {
+    if (this.props.id === record._id) return [{ key: `${record._id}notification`, index: '说明', text: '此用户为当前登录用户' }]
     const exData = [
       { key: 'level', index: '分类', dropDown: true,
         text: this.level,
@@ -101,7 +103,7 @@ class Mgmt extends Component {
       onOk: () => 
         common.handle(common.api.delUsers({ _id: record._id }), () => {
           const { pagination } = this.state
-          common.handle(common.api.getUsers({
+          common.handle(common.api.getAllUsers({
             skip: pagination.pageSize * (pagination.current - 1),
             limit: pagination.pageSize,
           }), res => {
@@ -124,7 +126,7 @@ class Mgmt extends Component {
           state={this.state}
           setState={this.setState.bind(this)}
           columns={this.columns}
-          api={common.api.getUsers}
+          api={common.api.getAllUsers}
           getExData={this.getExData}
           new={{btnText: '新建用户', onCreate: this.handleCreate, getFormItems: this.getFormItems}}
         />
@@ -133,4 +135,4 @@ class Mgmt extends Component {
   }
 }
 
-export default Mgmt
+export default connect(state => ({ ...state }))(Mgmt)

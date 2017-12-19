@@ -73,7 +73,7 @@ class Mgmt extends Component {
       onOk: () => 
         common.handle(common.api.delNotes({ _id: record._id }), () => {
           const { pagination } = this.state
-          common.handle(common.api.getNotes({
+          common.handle(common.api.getAllNotes({
             skip: pagination.pageSize * (pagination.current - 1),
             limit: pagination.pageSize,
           }), res => {
@@ -96,7 +96,7 @@ class Mgmt extends Component {
           state={this.state}
           setState={this.setState.bind(this)}
           columns={this.columns}
-          api={common.api.getNotes}
+          api={common.api.getAllNotes}
           getExData={this.getExData}
           new={{btnText: '新建通知', onCreate: this.handleCreate, getFormItems: this.getFormItems}}
         />

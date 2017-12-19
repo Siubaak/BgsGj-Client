@@ -26,6 +26,9 @@ class EditableCell extends Component {
     const newVal = this.state.value
     this.setState({ editable: true, newVal })
   }
+  componentWillReceiveProps(props) {
+    this.setState({ value: props.value })
+  }
   render() {
     const { value, newVal, editable } = this.state
     return (
