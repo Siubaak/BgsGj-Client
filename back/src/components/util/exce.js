@@ -3,7 +3,6 @@ import { Link } from 'react-router-dom'
 import { Button, Icon } from 'antd'
 import img403 from '../../assets/img/403.svg'
 import img404 from '../../assets/img/404.svg'
-import img500 from '../../assets/img/500.svg'
 import './util.less'
 
 const config = {
@@ -14,10 +13,6 @@ const config = {
   '404': {
     img: img404,
     des: '抱歉，访问的页面不存在',
-  },
-  '500': {
-    img: img500,
-    des: '抱歉，服务器出错了',
   },
 }
 

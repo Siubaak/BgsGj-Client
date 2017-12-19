@@ -1,6 +1,8 @@
 import React, { Component } from 'react'
 import { Switch, Redirect, Route, Link } from 'react-router-dom'
-import { Layout, Menu, Icon, Dropdown, Breadcrumb, message } from 'antd'
+import { Layout, Menu, Icon, Dropdown, Breadcrumb } from 'antd'
+import { connect } from 'react-redux'
+import { logout } from '../stores/actions'
 import Util from './util'
 import Material from './material'
 import Meeting from './meeting'
@@ -32,24 +34,19 @@ const breads = {
 
 class Home extends Component {
   state = {
-    collapsed: window.innerWidth <= 768,
+    collapsed: window.innerWidth <= 576,
   }
   onCollapse = collapsed => this.setState({ collapsed })
   toggle = () => this.setState({ collapsed: !this.state.collapsed })
-  onClick = e => {
-    if (e.key === 'u1') {
-      localStorage.removeItem('yhbgsback')
-      message.warn('注销成功')
-      setTimeout(() => window.location.href = '/login', 1000)
-    }
-  }
+  onClick = e => { if (e.key === 'u1') this.props.logout() }
   render() {
-    return (
+    return this.props.level && this.props.level > 2 ?
+    (
       <Layout className='home'>
         <Sider
           collapsible
           trigger={null}
-          breakpoint='sm'
+          breakpoint='md'
           className='side'
           collapsedWidth={0}
           onCollapse={this.onCollapse}
@@ -108,13 +105,24 @@ class Home extends Component {
             <Switch>
               <Route exact path='/' render={() => <Redirect to={malist} />} />
               <Route exact path={malist} component={Material.List} />
-              <Route exact path={mamgmt} component={Material.Mgmt} />
+              <Route exact path={mamgmt} render={() => {
+                if (this.props.level > 3) return <Material.Mgmt/>
+                else return <Util.Exce type='403'/>
+              }}/>
               <Route exact path={melist} component={Meeting.List} />
-              <Route exact path={memgmt} component={Meeting.Mgmt} />
-              <Route exact path={noedit} component={Note.List} />
-              <Route exact path={nomgmt} component={Note.Mgmt} />
+              <Route exact path={memgmt} render={() => {
+                if (this.props.level > 3) return <Meeting.Mgmt/>
+                else return <Util.Exce type='403'/>
+              }}/>
+              <Route exact path={nomgmt} render={() => {
+                if (this.props.level > 3) return <Note.Mgmt/>
+                else return <Util.Exce type='403'/>
+              }}/>
               <Route exact path={ursett} component={User.Setting} />
-              <Route exact path={urmgmt} component={User.Mgmt} />
+              <Route exact path={urmgmt} render={() => {
+                if (this.props.level > 3) return <User.Mgmt/>
+                else return <Util.Exce type='403'/>
+              }}/>
               <Route render={() => <Util.Exce type='404'/>}/>
             </Switch>
           </Content>
@@ -124,7 +132,9 @@ class Home extends Component {
         </Layout>
       </Layout>
     )
+    :
+    <Redirect to='/login'></Redirect>
   }
 }
 
-export default Home
+export default connect(state => ({ ...state }), { logout })(Home)
