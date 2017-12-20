@@ -85,7 +85,7 @@ class Home extends Component {
         <Layout>
           <Header className='head'>
             <Icon
-              className='icon'
+              className='icon fold'
               type={this.state.collapsed ? 'menu-unfold' : 'menu-fold'}
               onClick={this.toggle}
             />

@@ -6,7 +6,7 @@ if (token) {
   try {
     const payload = JSON.parse(window.atob(token.split('.')[1]))
     if (payload.exp > Date.now() / 1000) initState = payload
-  } catch (e) { console.log(e) }
+  } catch (err) { console.error(err) }
 }
 
 export const auth = (state = initState, action) => {
