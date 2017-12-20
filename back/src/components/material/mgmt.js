@@ -51,22 +51,17 @@ class Mgmt extends Component {
     return exData
   }
   getFormItems = getFieldDecorator => [
-    { key: 'type', label: '分类', type: 'text' },
-    { key: 'name', label: '名称', type: 'text' },
-    { key: 'quantity', label: '数量', type: 'number' },
-    { key: 'unit', label: '单位', type: 'text' },
-    { key: 'price', label: '单价', type: 'number' },
+    { key: 'type', label: '分类', type: 'text', icon: 'book' },
+    { key: 'name', label: '名称', type: 'text', icon: 'form'  },
+    { key: 'quantity', label: '数量', type: 'number', icon: 'calculator'  },
+    { key: 'unit', label: '单位', type: 'text', icon: 'inbox'  },
+    { key: 'price', label: '单价', type: 'number', icon: 'pay-circle-o'  },
   ].map(obj => 
-    <Form.Item
-      label={obj.label}
-      labelCol={{span: 5}}
-      wrapperCol={{span: 16}}
-      key={`${obj.key}new`}
-    >
+    <Form.Item key={`${obj.key}new`}>
       {
         getFieldDecorator(obj.key, {
           rules: [{ required: true, message: `请输入${obj.label}` }],
-        })(<Input type={obj.type}/>)
+        })(<Input type={obj.type} prefix={<Icon type={obj.icon} style={{fontSize: 13}}/>} placeholder={obj.label}/>)
       }
     </Form.Item>
   )

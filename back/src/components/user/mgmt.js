@@ -72,19 +72,16 @@ class Mgmt extends Component {
     return exData
   }
   getFormItems = getFieldDecorator => [
-    { key: 'account', label: '账号', type: 'text' },
-    { key: 'password', label: '密码', type: 'text' },
+    { key: 'account', label: '账号', icon: 'user' },
+    { key: 'password', label: '密码', icon: 'lock' },
   ].map(obj => 
     <Form.Item
-      label={obj.label}
-      labelCol={{span: 5}}
-      wrapperCol={{span: 16}}
       key={`${obj.key}new`}
     >
       {
         getFieldDecorator(obj.key, {
           rules: [{ required: true, message: `请输入${obj.label}` }],
-        })(<Input type={obj.type}/>)
+        })(<Input type='text' prefix={<Icon type={obj.icon} style={{fontSize: 13}}/>} placeholder={obj.label}/>)
       }
     </Form.Item>
   )

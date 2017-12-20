@@ -56,6 +56,7 @@ class List extends Component {
           className='table' 
           dataSource={data}
           loading={loading}
+          locale={{emptyText: '暂无数据'}}
           scroll={{ x: 375 }}
           pagination={pagination}
           onChange={this.handleChange}

@@ -8,11 +8,11 @@ import './util.less'
 const config = {
   '403': {
     img: img403,
-    des: '抱歉，无权访问该页面',
+    des: '无权访问该页面',
   },
   '404': {
     img: img404,
-    des: '抱歉，访问的页面不存在',
+    des: '访问页面不存在',
   },
 }
 

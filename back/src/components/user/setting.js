@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Table, Form, Input, message } from 'antd'
+import { Table, Form, Input, message, Icon } from 'antd'
 import common from '../../common'
 import { connect } from 'react-redux'
 import Util from '../util'
@@ -12,19 +12,14 @@ class Setting extends Component {
     loading: false,
   }
   getFormItems = getFieldDecorator => [
-    { key: 'npasswd', label: '新密码', type: 'password' },
-    { key: 'ncpasswd', label: '确认密码', type: 'password' },
+    { key: 'npasswd', label: '新密码' },
+    { key: 'ncpasswd', label: '确认密码' },
   ].map(obj => 
-    <Form.Item
-      label={obj.label}
-      labelCol={{span: 7}}
-      wrapperCol={{span: 14}}
-      key={`${obj.key}new`}
-    >
+    <Form.Item key={`${obj.key}new`}>
       {
         getFieldDecorator(obj.key, {
           rules: [{ required: true, message: `请输入${obj.label}` }],
-        })(<Input type={obj.type}/>)
+        })(<Input type='password' prefix={<Icon type='lock' style={{fontSize: 13}}/>} placeholder={obj.label}/>)
       }
     </Form.Item>
   )

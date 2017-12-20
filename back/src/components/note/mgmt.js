@@ -49,16 +49,11 @@ class Mgmt extends Component {
     { key: 'title', label: '标题', min: 1, max: 3 },
     { key: 'content', label: '内容', min: 5, max: 10 },
   ].map(obj => 
-    <Form.Item
-      label={obj.label}
-      labelCol={{span: 5}}
-      wrapperCol={{span: 16}}
-      key={`${obj.key}new`}
-    >
+    <Form.Item key={`${obj.key}new`}>
       {
         getFieldDecorator(obj.key, {
           rules: [{ required: true, message: `请输入${obj.label}` }],
-        })(<Input.TextArea style={{ resize: 'none' }} autosize={{ minRows: obj.min, maxRows: obj.max }}/>)
+        })(<Input.TextArea style={{ resize: 'none' }} placeholder={obj.label} autosize={{ minRows: obj.min, maxRows: obj.max }}/>)
       }
     </Form.Item>
   )
