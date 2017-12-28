@@ -42,21 +42,25 @@
         <div class="weui-cell__ft"></div>
       </a>
     </div>
-    <div class="weui-cells__title">投影仪使用申请勾选</div>
-    <div class="weui-cells weui-cells_checkbox">
+    <div v-if="isProj" class="weui-cells__title">投影仪借用申请</div>
+    <div v-else class="weui-cells__title">投影仪暂停借用</div>
+    <div v-if="isProj" class="weui-cells weui-cells_checkbox">
       <label class="weui-cell weui-check__label" for="projection">
         <div class="weui-cell__hd">
           <input type="checkbox" class="weui-check" name="checkbox" id="projection" v-model="proj">
           <i class="weui-icon-checked"></i>
         </div>
         <div class="weui-cell__bd">
-          <p>需要使用投影仪</p>
+          <p>需要借用投影仪</p>
         </div>
       </label>
     </div>
     <div class="weui-cells__tips">说明：请准确填写预约人姓名、联系方式和借用时间，否则研会办公室将拒绝申请。只允许预约往后五天内（包括今天）的会议室，若某个借用时间没有出现在选择列表中，则表明该时间已被预约。对于特殊情况，请联系办公室物资管理人员进行协商。</div>
     <p class="weui-btn-area">
-      <a @click="createMetbook" class="weui-btn weui-btn_primary">提交申请</a>
+      <a @click="createMetbook"
+        :class="{ 'weui-btn': true, 'weui-btn_primary': true, 'weui-btn_disabled': !isEnable }">
+        {{ isEnable ? '提交申请' : '暂停申请' }}
+      </a>
     </p>
   </div>
 </template>
@@ -78,11 +82,21 @@ export default {
       date: '请选择日期',
       time: '请先选择借用日期',
       proj: false,
+      isEnable: true,
+      isProj: true,
       occupiedTime: {}
     }
   },
+  activated () {
+    api.handleApi(api.getMeetings({ settings: true }), res => {
+      this.isEnable = res.body.enable
+      this.isProj = res.body.proj
+      if (!this.isProj) this.proj = false
+    }, '正在获取状态')
+  },
   methods: {
     createMetbook () {
+      if (!this.isEnable) return
       if (this.name && this.phone && this.activity && this.date !== '请选择日期' &&
         this.time !== '请先选择借用日期' && this.time !== '请选择时间') {
         api.handleApi(api.postMetbooks({
@@ -109,8 +123,8 @@ export default {
     datePick () {
       const now = new Date()
       const day = ['日', '一', '二', '三', '四', '五', '六']
-      let end = new Date()
-      let dateList = []
+      const end = new Date()
+      const dateList = []
       for (let i = 0; i !== 5; ++i) {
         end.setTime(now.getTime() + 86400000 * i)
         dateList.push({
@@ -128,72 +142,48 @@ export default {
     },
     timePick () {
       if (this.time !== '请先选择借用日期') {
-        let loading = weui.loading('正在加载列表')
-        api.meetingOccupiedTimeGet()
-          .then((res) => {
-            if (res.status === 200) {
-              this.occupiedTime = res.data.occupiedTime
-              let options = []
-              if (!this.occupiedTime[`${this.date}上午 8:00-10:00`]) {
-                options.push({
-                  label: '上午 8:00-10:00',
-                  value: 0
-                })
-              }
-              if (!this.occupiedTime[`${this.date}上午 10:00-12:00`]) {
-                options.push({
-                  label: '上午 10:00-12:00',
-                  value: 1
-                })
-              }
-              if (!this.occupiedTime[`${this.date}中午 13:00-15:00`]) {
-                options.push({
-                  label: '中午 13:00-15:00',
-                  value: 2
-                })
-              }
-              if (!this.occupiedTime[`${this.date}下午 15:00-17:00`]) {
-                options.push({
-                  label: '下午 15:00-17:00',
-                  value: 3
-                })
-              }
-              if (!this.occupiedTime[`${this.date}晚上 18:00-20:00`]) {
-                options.push({
-                  label: '晚上 18:00-20:00',
-                  value: 4
-                })
-              }
-              if (!this.occupiedTime[`${this.date}晚上 20:00-22:00`]) {
-                options.push({
-                  label: '晚上 20:00-22:00',
-                  value: 5
-                })
-              }
-              if (options.length === 0) {
-                options.push({
-                  label: '该日所有时间段均被预约',
-                  value: -1
-                })
-              }
-              loading.hide()
-              weui.picker(options, {
-                onConfirm: (result) => {
-                  if (result[0].value !== -1) {
-                    this.time = result[0].label
-                  }
-                },
-                id: 'time-picker'
+        api.handleApi(api.getMeetings({ settings: true }), res => {
+          this.occupiedTime = res.body
+          const options = []
+          const times = [
+            '8:00-9:00',
+            '9:00-10:00',
+            '10:00-11:00',
+            '11:00-12:00',
+            '12:00-13:00',
+            '13:00-14:00',
+            '14:00-15:00',
+            '15:00-16:00',
+            '16:00-17:00',
+            '17:00-18:00',
+            '18:00-19:00',
+            '19:00-20:00',
+            '20:00-21:00',
+            '21:00-22:00'
+          ]
+          for (let index in times) {
+            if (!this.occupiedTime[`${this.date}${times[index]}`]) {
+              options.push({
+                label: times[index],
+                value: index
               })
-            } else {
-              loading.hide()
-              weui.alert(res.data.msg)
             }
-          }).catch((err) => {
-            loading.hide()
-            console.error(err)
-            weui.alert('会议室空闲时间段列表加载出错，请稍后再试')
+          }
+          if (options.length === 0) {
+            options.push({
+              label: '该日所有时间段均被预约',
+              value: -1
+            })
+          }
+          weui.picker(options, {
+            onConfirm: (result) => {
+              if (result[0].value !== -1) {
+                this.time = result[0].label
+              }
+            },
+            id: 'time-picker'
           })
+        }, '正在加载列表')
       }
     }
   }

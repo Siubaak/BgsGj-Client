@@ -181,6 +181,19 @@ export default {
       meetingBookList: []
     }
   },
+  activated () {
+    api.handleApi(api.getMeetings({ settings: true }), res => {
+    }, '正在获取信息')
+  },
+  beforeRouteEnter: (to, from, next) => {
+    next((vm) => {
+      vm.materialBookListGet()
+      vm.meetingBookListGet()
+    })
+  },
+  created () {
+    this.userInfoGet()
+  },
   methods: {
     infoEditClick () {
       this.isInfoEdit = !this.isInfoEdit
@@ -346,15 +359,6 @@ export default {
           weui.alert('用户会议室预约列表加载出错，请尝试刷新页面')
         })
     }
-  },
-  beforeRouteEnter: (to, from, next) => {
-    next((vm) => {
-      vm.materialBookListGet()
-      vm.meetingBookListGet()
-    })
-  },
-  created () {
-    this.userInfoGet()
   }
 }
 </script>

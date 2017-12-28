@@ -10,7 +10,7 @@ class Mgmt extends Component {
     loading: false,
   }
   componentDidMount() {
-    common.handle(common.api.getMeetings(), res => {
+    common.handle(common.api.getMeetings({ settings: true }), res => {
       const { enable, proj } = res.body
       this.setState({ enable, proj })
     }, this.setState.bind(this))

@@ -230,9 +230,12 @@ export default {
             }
           }
         }
+        if (options.length === 0) {
+          options.push({ label: '无', value: -1 })
+        }
         weui.picker(options, {
           onConfirm: result => {
-            if (result[1].value !== -1) {
+            if (result[1] && result[1].value !== -1) {
               this.materialBookItems.push({
                 index: result[1].value,
                 material: this.materials[result[1].value]._id,
