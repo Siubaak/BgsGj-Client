@@ -23,8 +23,10 @@ export default {
       list: ''
     }
   },
-  created () {
-    api.handleApi(api.getNotes(), res => { this.list = res.body.list })
+  activated () {
+    api.handleApi(api.getNotes(), res => {
+      this.list = res.body.list
+    }, '正在获取通知')
   }
 }
 </script>

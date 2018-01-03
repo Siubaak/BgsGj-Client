@@ -27,7 +27,7 @@
     </div>
     <div class="weui-cells__title">领取时间及归还时间预约选择</div>
     <div class="weui-cells">
-      <a class="weui-cell weui-cell_access" @click="pickTakeData">
+      <a class="weui-cell weui-cell_access" @click="pickTakeDate">
         <div class="weui-cell__hd"><label class="weui-label">领取日期</label></div>
         <div class="weui-cell__bd">
           <p>{{ takeDate }}</p>
@@ -46,7 +46,7 @@
     <div class="weui-cells">
       <a class="weui-cell weui-cell_access"
         @click="pickNumber(index, materialBookItem, materials[materialBookItem.index].left)"
-        v-for="(materialBookItem, index) in materialBookItems"
+        v-for="(materialBookItem, index) in matbookItems"
         :key="index"
       >
         <div class="weui-cell__hd"><label class="weui-label">{{ materials[materialBookItem.index].name }}</label></div>
@@ -86,7 +86,7 @@ export default {
       activity: '',
       takeDate: '请选择日期',
       returnDate: '请先选择领取日期',
-      materialBookItems: [],
+      matbookItems: [],
       materials: []
     }
   },
@@ -94,7 +94,7 @@ export default {
     createMatbook () {
       if (this.name && this.phone && this.activity &&
         this.takeDate !== '请选择日期' && this.returnDate !== '请先选择领取日期' &&
-        this.returnDate !== '请选择日期' && this.materialBookItems.length) {
+        this.returnDate !== '请选择日期' && this.matbookItems.length) {
         api.handleApi(api.postMatbooks({
           user: this.user,
           name: this.name,
@@ -102,7 +102,7 @@ export default {
           activity: this.activity,
           takeDate: this.takeDate,
           returnDate: this.returnDate,
-          materials: this.materialBookItems
+          materials: this.matbookItems
         }), res => {
           weui.toast('提交成功', 1500)
           this.name = ''
@@ -110,22 +110,22 @@ export default {
           this.activity = ''
           this.takeDate = '请选择日期'
           this.returnDate = '请先选择领取日期'
-          this.materialBookItems = []
+          this.matbookItems = []
         }, '正在提交')
       } else {
         weui.alert('请正确填写信息')
       }
     },
-    pickTakeData () {
+    pickTakeDate () {
       const now = new Date()
-      const day = ['日', '一', '二', '三', '四', '五', '六']
+      const days = ['日', '一', '二', '三', '四', '五', '六']
       const end = new Date()
       const dateList = []
       for (let i = 0; i !== 5; ++i) {
         end.setTime(now.getTime() + 86400000 * i)
         if (end.getDay() === 1 || end.getDay() === 3 || end.getDay() === 5) {
           dateList.push({
-            label: `${end.getFullYear()}年${end.getMonth() + 1}月${end.getDate()}日（周${day[end.getDay()]}）`,
+            label: `${end.getFullYear()}年${end.getMonth() + 1}月${end.getDate()}日（周${days[end.getDay()]}）`,
             value: i
           })
         }
@@ -140,7 +140,7 @@ export default {
     },
     pickReturnDate () {
       if (this.returnDate !== '请先选择领取日期') {
-        const day = ['日', '一', '二', '三', '四', '五', '六']
+        const days = ['日', '一', '二', '三', '四', '五', '六']
         const yearIndex = this.takeDate.indexOf('年')
         const monthIndex = this.takeDate.indexOf('月')
         const dateIndex = this.takeDate.indexOf('日')
@@ -155,7 +155,7 @@ export default {
           end.setTime(startDate.getTime() + 86400000 * i)
           if (end.getDay() === 1 || end.getDay() === 3 || end.getDay() === 5) {
             dateList.push({
-              label: `${end.getFullYear()}年${end.getMonth() + 1}月${end.getDate()}日（周${day[end.getDay()]}）`,
+              label: `${end.getFullYear()}年${end.getMonth() + 1}月${end.getDate()}日（周${days[end.getDay()]}）`,
               value: i
             })
           }
@@ -186,7 +186,7 @@ export default {
           if (result[0].value) {
             materialBookItem.book = result[0].value
           } else {
-            this.materialBookItems.splice(index, 1)
+            this.matbookItems.splice(index, 1)
           }
         },
         id: 'number-picker'
@@ -200,7 +200,7 @@ export default {
         let children = []
         for (let i = 0; i < this.materials.length - 1; ++i) {
           let isSelected = false
-          for (const materialBookItem of this.materialBookItems) {
+          for (const materialBookItem of this.matbookItems) {
             if (materialBookItem.index === i) {
               isSelected = true
               break
@@ -236,7 +236,7 @@ export default {
         weui.picker(options, {
           onConfirm: result => {
             if (result[1] && result[1].value !== -1) {
-              this.materialBookItems.push({
+              this.matbookItems.push({
                 index: result[1].value,
                 material: this.materials[result[1].value]._id,
                 book: 0

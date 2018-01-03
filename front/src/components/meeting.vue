@@ -42,9 +42,9 @@
         <div class="weui-cell__ft"></div>
       </a>
     </div>
-    <div v-if="isProj" class="weui-cells__title">投影仪借用申请</div>
-    <div v-else class="weui-cells__title">投影仪暂停借用</div>
-    <div v-if="isProj" class="weui-cells weui-cells_checkbox">
+    <div v-show="isProj" class="weui-cells__title">投影仪借用申请</div>
+    <div v-show="!isProj" class="weui-cells__title">投影仪暂停借用</div>
+    <div v-show="isProj" class="weui-cells weui-cells_checkbox">
       <label class="weui-cell weui-check__label" for="projection">
         <div class="weui-cell__hd">
           <input type="checkbox" class="weui-check" name="checkbox" id="projection" v-model="proj">
@@ -122,13 +122,13 @@ export default {
     },
     datePick () {
       const now = new Date()
-      const day = ['日', '一', '二', '三', '四', '五', '六']
+      const days = ['日', '一', '二', '三', '四', '五', '六']
       const end = new Date()
       const dateList = []
       for (let i = 0; i !== 5; ++i) {
         end.setTime(now.getTime() + 86400000 * i)
         dateList.push({
-          label: `${end.getFullYear()}年${end.getMonth() + 1}月${end.getDate()}日（周${day[end.getDay()]}）`,
+          label: `${end.getFullYear()}年${end.getMonth() + 1}月${end.getDate()}日（周${days[end.getDay()]}）`,
           value: i
         })
       }

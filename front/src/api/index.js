@@ -46,7 +46,8 @@ export default {
   putMetbooks (params) { return sendReq('put', resources.metbooks, params) },
   // 通用处理
   handleApi (api, done, loadText) {
-    const loading = weui.loading(loadText)
+    let loading
+    if (loadText) loading = weui.loading(loadText)
     api.end((err, res) => {
       if (err || !res.ok) {
         try {
@@ -56,7 +57,7 @@ export default {
           weui.alert('服务器错误')
         }
       } else done(res)
-      loading.hide()
+      if (loadText) loading.hide()
     })
   }
 }

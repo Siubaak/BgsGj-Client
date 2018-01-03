@@ -28,7 +28,7 @@ class MaList extends Component {
     { key: `${record._id}returnDate`, index: '归还', text: record.returnDate },
     { key: `${record._id}materials`, index: '物资', text: record.materials.map((mat, i) =>
       <div style={{ display: 'inline-block' }}
-        key={`${record._id}mat${i}`}>({i + 1})
+        key={`${record._id}mat${i}`}>({i + 1})&nbsp;
         <strong>{mat.material.name} × {mat.book}</strong>
         &nbsp;&nbsp;&nbsp;
       </div>
