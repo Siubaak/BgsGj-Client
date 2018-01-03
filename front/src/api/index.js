@@ -1,6 +1,6 @@
 import request from 'superagent'
 import weui from 'weui.js'
-const apiUrl = '/api'
+const apiUrl = 'http://api.localhost'
 const resources = {
   token: apiUrl + '/tokens',
   users: apiUrl + '/users',

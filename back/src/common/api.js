@@ -1,5 +1,5 @@
 import request from 'superagent'
-const apiUrl = '/api'
+const apiUrl = 'http://api.localhost'
 const resources = {
   token: apiUrl + '/tokens',
   users: apiUrl + '/users',
