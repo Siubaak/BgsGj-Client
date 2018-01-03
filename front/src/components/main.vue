@@ -49,7 +49,8 @@ export default {
         '/': '通知公告',
         '/material': '物资申请',
         '/meeting': '会议室预约',
-        '/account': '部门账号'
+        '/account': '部门账号',
+        '/logmsg': '请登录'
       },
       path: window.location.pathname
     }
