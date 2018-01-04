@@ -7,15 +7,13 @@
 ``` bash
 cd front
 # 或
-cd back
+# cd back
 
 # 安装依赖
 npm install
 
-# 在localhost:8080上进行调试
-npm run dev # Vue
-# 或
-npm start # React
+# 调试
+npm start
 
 # 压缩打包
 npm run build

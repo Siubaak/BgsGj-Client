@@ -102,14 +102,6 @@ class Mgmt extends Component {
   render() {
     return (
       <div className='material'>
-        <Util.List 
-          state={this.state}
-          setState={this.setState.bind(this)}
-          columns={this.columns}
-          getExData={this.getExData}
-          api={common.api.getMaterials}
-          new={{btnText: '新建物资', layout: 'vertical', onCreate: this.handleCreate, getFormItems: this.getFormItems}}
-        />
         <Table
           pagination={false}
           showHeader={false}
@@ -127,6 +119,14 @@ class Mgmt extends Component {
                   this.setState.bind(this)))
               }}/> },
           ]}
+        />
+        <Util.List 
+          state={this.state}
+          setState={this.setState.bind(this)}
+          columns={this.columns}
+          getExData={this.getExData}
+          api={common.api.getMaterials}
+          new={{btnText: '新建物资', layout: 'vertical', onCreate: this.handleCreate, getFormItems: this.getFormItems}}
         />
       </div>
     )
