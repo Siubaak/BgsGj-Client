@@ -65,7 +65,10 @@
     </div>
     <div class="weui-cells__tips">说明：请准确填写预约人姓名、联系方式、活动名称、领取时间、归还时间和物资借用列表，否则研会办公室将拒绝申请。只允许预约往后五天内（包括今天）的物资借用，并在领取后五天（包括领取当天）内归还，若某类物资没有出现在添加列表中，则表明该物资已全部被预约或借用。物资领取时间及归还时间均为办公室值班时间，即每周一、三、五下午17:30-18:00。对于特殊情况，请联系办公室物资管理人员进行协商。</div>
     <p class="weui-btn-area">
-      <a @click="createMatbook" class="weui-btn weui-btn_primary">提交申请</a>
+      <a @click="createMatbook"
+        :class="{ 'weui-btn': true, 'weui-btn_primary': true, 'weui-btn_disabled': !isEnable }">
+        {{ isEnable ? '提交申请' : '暂停申请' }}
+      </a>
     </p>
   </div>
 </template>
@@ -87,11 +90,18 @@ export default {
       takeDate: '请选择日期',
       returnDate: '请先选择领取日期',
       matbookItems: [],
-      materials: []
+      materials: [],
+      isEnable: false
     }
+  },
+  activated () {
+    api.handleApi(api.getMaterials({ settings: true }), res => {
+      this.isEnable = res.body.enable
+    }, '正在获取状态')
   },
   methods: {
     createMatbook () {
+      if (!this.isEnable) return
       if (this.name && this.phone && this.activity &&
         this.takeDate !== '请选择日期' && this.returnDate !== '请先选择领取日期' &&
         this.returnDate !== '请选择日期' && this.matbookItems.length) {

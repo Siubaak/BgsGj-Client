@@ -82,8 +82,8 @@ export default {
       date: '请选择日期',
       time: '请先选择借用日期',
       proj: false,
-      isEnable: true,
-      isProj: true,
+      isEnable: false,
+      isProj: false,
       occupiedTime: {}
     }
   },

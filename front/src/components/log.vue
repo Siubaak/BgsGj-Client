@@ -62,9 +62,17 @@ export default {
             value: index
           })
         })
+        if (!options.length) {
+          options.push({
+            label: '无',
+            value: -1
+          })
+        }
         weui.picker(options, {
           onConfirm: result => {
-            this.user.account = result[0].label
+            if (result[0].value !== -1) {
+              this.user.account = result[0].label
+            }
           },
           id: 'user-picker'
         })

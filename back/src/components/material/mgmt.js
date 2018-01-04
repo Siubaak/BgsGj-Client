@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Switch, Form, Input, Icon, Modal } from 'antd'
+import { Table, Switch, Form, Input, Icon, Modal } from 'antd'
 import common from '../../common'
 import Util from '../util'
 import './material.less'
@@ -9,6 +9,7 @@ class Mgmt extends Component {
     data: [],
     pagination: { size: 'small', pageSize: 10, current: 1 },
     loading: false,
+    enable: false,
   }
   columns = [
     { title: '分类', key: 'mamgmttype', dataIndex: 'type' },
@@ -92,6 +93,12 @@ class Mgmt extends Component {
       },
     );
   }
+  componentDidMount() {
+    common.handle(common.api.getMaterials({ settings: true }), res => {
+      const { enable } = res.body
+      this.setState({ enable })
+    }, this.setState.bind(this))
+  }
   render() {
     return (
       <div className='material'>
@@ -102,6 +109,24 @@ class Mgmt extends Component {
           getExData={this.getExData}
           api={common.api.getMaterials}
           new={{btnText: '新建物资', layout: 'vertical', onCreate: this.handleCreate, getFormItems: this.getFormItems}}
+        />
+        <Table
+          pagination={false}
+          showHeader={false}
+          className='mgmt-table'
+          loading={this.state.loading}
+          columns={[
+            { title: '', key: 'index', dataIndex: 'index' },
+            { title: '', key: 'text', dataIndex: 'text' },
+          ]}
+          dataSource={[
+            { key: `mamgmtenable`, index: '物资借用', text: <Switch checked={this.state.enable}
+              onChange={enable => {
+                common.handle(common.api.putMaterials({ enable }),
+                  () => this.setState({ enable },
+                  this.setState.bind(this)))
+              }}/> },
+          ]}
         />
       </div>
     )

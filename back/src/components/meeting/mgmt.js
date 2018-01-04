@@ -21,7 +21,7 @@ class Mgmt extends Component {
         <Table
           pagination={false}
           showHeader={false}
-          className='table'
+          className='mgmt-table'
           loading={this.state.loading}
           columns={[
             { title: '', key: 'index', dataIndex: 'index' },
