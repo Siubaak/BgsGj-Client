@@ -173,8 +173,9 @@ export default {
   },
   activated () {
     this.getUser()
-    this.getMatbooks()
-    this.getMetbooks()
+    const level = this.$store.state.user.level
+    if (level > 0) this.getMatbooks()
+    if (level > 1) this.getMetbooks()
   },
   methods: {
     clickInfoEdit () {

@@ -15,7 +15,7 @@ const sendReq = (method, uri, params) => {
   let token
   try {
     token = 'Bearer ' + localStorage.getItem('yhbgsback').replace(/(^\\")|(\\"$)/g, '')
-  } catch (err) { console.error(err) }
+  } catch (err) { }
   const req = request[method](uri)
     .set('Authorization', token)
   if (method === 'get') return req.query(params)

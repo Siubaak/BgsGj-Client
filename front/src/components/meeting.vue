@@ -142,7 +142,7 @@ export default {
     },
     timePick () {
       if (this.time !== '请先选择借用日期') {
-        api.handleApi(api.getMeetings({ settings: true }), res => {
+        api.handleApi(api.getMeetings(), res => {
           this.occupiedTime = res.body
           const options = []
           const times = [

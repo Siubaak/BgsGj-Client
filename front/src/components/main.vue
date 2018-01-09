@@ -50,7 +50,9 @@ export default {
         '/material': '物资申请',
         '/meeting': '会议室预约',
         '/account': '部门账号',
-        '/logmsg': '请登录'
+        '/logmsg': '请登录',
+        '/authmsg': '未授权',
+        '/notmainmsg': '用户无权限'
       },
       path: window.location.pathname
     }
