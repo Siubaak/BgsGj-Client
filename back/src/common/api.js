@@ -46,7 +46,9 @@ export default {
   putMatbooks(params) { return sendReq('put', resources.matbooks, params) },
   // 会议室
   getMeetings(params) { return sendReq('get', resources.meetings, params) },
+  postMeetings(params) { return sendReq('post', resources.meetings, params) },
   putMeetings(params) { return sendReq('put', resources.meetings, params) },
+  delMeetings(params) { return sendReq('del', resources.meetings, params) },
   // 会议室预约
   getMetbooks(params) { return sendReq('get', resources.metbooks, params) },
   putMetbooks(params) { return sendReq('put', resources.metbooks, params) },
