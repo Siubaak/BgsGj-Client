@@ -9,7 +9,7 @@ class Mgmt extends Component {
     data: [],
     pagination: { size: 'small', pageSize: 10, current: 1 },
     loading: false,
-    enable: false,
+    gEnable: false,
   }
   columns = [
     { title: '分类', key: 'mamgmttype', dataIndex: 'type' },
@@ -95,8 +95,8 @@ class Mgmt extends Component {
   }
   componentDidMount() {
     common.handle(common.api.getMaterials({ settings: true }), res => {
-      const { enable } = res.body
-      this.setState({ enable })
+      const { gEnable } = res.body
+      this.setState({ gEnable })
     }, this.setState.bind(this))
   }
   render() {
@@ -112,10 +112,10 @@ class Mgmt extends Component {
             { title: '', key: 'text', dataIndex: 'text' },
           ]}
           dataSource={[
-            { key: `mamgmtenable`, index: '物资借用', text: <Switch checked={this.state.enable}
-              onChange={enable => {
-                common.handle(common.api.putMaterials({ enable }),
-                  () => this.setState({ enable },
+            { key: `mamgmtenable`, index: '物资借用', text: <Switch checked={this.state.gEnable}
+              onChange={gEnable => {
+                common.handle(common.api.putMaterials({ gEnable }),
+                  () => this.setState({ gEnable },
                   this.setState.bind(this)))
               }}/> },
           ]}

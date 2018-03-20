@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Input, Icon, Dropdown, Menu, Button } from 'antd'
+import { Input, Icon, Dropdown, Menu, Button, Select } from 'antd'
 import './util.less'
 
 class EditableCell extends Component {
@@ -9,7 +9,12 @@ class EditableCell extends Component {
     editable: false,
   }
   handleChange = (e) => {
-    const newVal = e.key || e.target.value
+    let newVal
+    if (this.props.select) {
+      newVal = e
+    } else {
+      newVal = e.key || e.target.value
+    }
     this.setState({ newVal })
   }
   check = () => {
@@ -51,7 +56,18 @@ class EditableCell extends Component {
                   onPressEnter={this.check}
                   autosize
                 />
-                : 
+                :
+                this.props.select ?
+                <Select
+                  mode='multiple'
+                  style={{width: '100%'}}
+                  onChange={this.handleChange}
+                  onPressEnter={this.check}
+                  value={newVal}
+                >
+                  {this.props.options}
+                </Select>
+                :
                 <Input
                   value={newVal}
                   onChange={this.handleChange}
@@ -74,6 +90,9 @@ class EditableCell extends Component {
             <div className='text'>
               {
                 (
+                  Array.isArray(value) ?
+                  value.join(', ')
+                  :
                   this.props.text && this.props.text.length ?
                   this.props.text[value]
                   :
