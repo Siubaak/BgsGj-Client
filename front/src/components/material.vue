@@ -1,75 +1,106 @@
+<style scoped>
+.standard{
+    margin-top:20px;
+    margin-bottom: 20px;
+    margin-left:80px;
+    font-family: "Helvetica Neue",Helvetica,"PingFang SC","Hiragino Sans GB","Microsoft YaHei","微软雅黑",Arial,sans-serif;
+}
+li,p{
+  margin-top:8px;
+  margin-left:20px;
+  margin-right: 10px;
+  font-family: "Helvetica Neue",Helvetica,"PingFang SC","Hiragino Sans GB","Microsoft YaHei","微软雅黑",Arial,sans-serif;
+  font-size: 12px;  
+}
+h3{
+  margin-top: 10px;
+  margin-left: 15px;
+}
+.blank{
+  padding: 100px;
+}
+.icon{
+  opacity: 0.5;
+}
+.icon:hover{
+  opacity: 1.0;
+}
+.float-left{
+  float: left;
+}
+.matBookItem{
+  margin-left:60px;
+  margin-top:28px;
+}
+.deleteIcon{
+  margin-left:10px;
+}
+.input{
+  width: 200px;
+}
+.center{
+  margin-top: 50px;
+  text-align:center; 
+  width:100%;
+  height:100%;
+  margin:0px;
+}
+.gold{
+  width: 12px;
+  height: 12px;
+  top:1px;
+  position: relative;
+}
+.emphasize{
+  font-weight: bold;
+  color:#FF9900;
+  }
+</style>
 <template>
   <div id="material">
-    <div class="weui-cells__title">预约人及活动信息填写</div>
-    <div class="weui-cells weui-cells_form">
-      <div class="weui-cell">
-        <div class="weui-cell__hd">
-          <label class="weui-label">预约人</label>
-        </div>
-        <div class="weui-cell__bd">
-          <input class="weui-input" type="text" placeholder="请输入姓名" v-model="name">
-        </div>
+    <h3>负责人及活动信息</h3>
+    <p></p>
+      <Form :model="formRight" label-position="right" :label-width="80">
+        <FormItem label="负责人">
+            <Input class="input" v-model="name" placeholder="请输入姓名"></Input>
+        </FormItem>
+        <FormItem label="手机">
+            <Input class="input" v-model="phone"  pattern="[0-9]*" placeholder="请输入手机号"></Input>
+        </FormItem>
+        <FormItem label="活动名称">
+            <Input class="input" v-model="activity"   placeholder="请输入用于的活动"></Input>
+        </FormItem>
+        </Form>
+        <div>
+        <p class="float-left">归还时间</p>
+         <Row  class="standard">
+        <Col span="12">
+            <DatePicker type="date" :options="options1" placeholder="请选择归还时间" :editable=false style="width: 200px" v-model="returnDate1"></DatePicker>
+        </Col>
+        </Row>
       </div>
-      <div class="weui-cell">
-        <div class="weui-cell__hd">
-          <label class="weui-label">联系方式</label>
+
+        <p class="float-left">物资借用</p>
+        <ol class="matBookItem">
+          <li v-for="matbookItem in matbookItems"><span style="color:#FF9900">●</span> {{matbookItem.label}}
+            <a @click="delItem(matbookItem)" class="deleteIcon"><Icon class="icon" type="minus-circled"  color="red" /> </a>
+            &nbsp&nbsp <img src="../assets/img/gold.png" class="gold"> {{ materials[matbookItem.index].price }}
+          </li>
+        </ol>
+       <Cascader style="width:150px" class="standard" v-model="value1" :data="item1" placeholder="请选择物资" :render-format="format"  @on-change="handleChange"> 
+       </Cascader>
+       <p v-show=" matbookItems">合计： &nbsp<img src="../assets/img/gold.png" class="gold"> <span style="font-weight:bold">{{ total }}</span></p>
+        <div  style="padding:20px;text-align:left">
+        <Card dis-hover>
+            <p>- 物资借用<span class="emphasize">不能再进行预约</span>，借用后即从库存中扣除，所以请勿提前借用。如出现数量不足，请联系办公室补充采购，通过提升库存量解决多部门使用的问题；</p>
+            <p>- 物资系统<span class="emphasize">只管理大件物资租借</span>，没有出现在系统上的物资，在物资室有的可自行借用，用完有剩余的放回物资室，以供后用；</p>
+            <p>- 归还物资时请将物资<span class="emphasize">有序放回原位</span>，保持物资室的整齐，不按要求的部门将扣除一定量金币；</p>
+            <p>- 金币用于兑换或使用特殊物资，如蓝牙音箱，华工羊城通，矿泉水等。</p>
+        </Card>
+        </div>    
+        <div  class="center">
+        <Button type="success" :disabled="!isEnable" @click="createMatbook"> {{ isEnable ? '提交申请' : '暂停申请' }}</Button>
         </div>
-        <div class="weui-cell__bd">
-          <input class="weui-input" type="number" pattern="[0-9]*" placeholder="请输入手机号" v-model="phone">
-        </div>
-      </div>
-      <div class="weui-cell">
-        <div class="weui-cell__hd"><label class="weui-label">活动名称</label></div>
-        <div class="weui-cell__bd">
-          <input class="weui-input" type="text" placeholder="请输入活动名称" v-model="activity">
-        </div>
-      </div>
-    </div>
-    <div class="weui-cells__title">领取时间及归还时间预约选择</div>
-    <div class="weui-cells">
-      <a class="weui-cell weui-cell_access" @click="pickTakeDate">
-        <div class="weui-cell__hd"><label class="weui-label">领取日期</label></div>
-        <div class="weui-cell__bd">
-          <p>{{ takeDate }}</p>
-        </div>
-        <div class="weui-cell__ft"></div>
-      </a>
-      <a class="weui-cell weui-cell_access" @click="pickReturnDate">
-        <div class="weui-cell__hd"><label class="weui-label">归还日期</label></div>
-        <div class="weui-cell__bd">
-          <p>{{ returnDate }}</p>
-        </div>
-        <div class="weui-cell__ft"></div>
-      </a>
-    </div>
-    <div class="weui-cells__title">物资列表填写</div>
-    <div class="weui-cells">
-      <a class="weui-cell weui-cell_access"
-        @click="pickNumber(index, materialBookItem, materials[materialBookItem.index].left)"
-        v-for="(materialBookItem, index) in matbookItems"
-        :key="index"
-      >
-        <div class="weui-cell__hd"><label class="weui-label">{{ materials[materialBookItem.index].name }}</label></div>
-        <div class="weui-cell__bd">
-          <p v-show="!materialBookItem.book">请选择数量，剩余{{ materials[materialBookItem.index].left }}{{ materials[materialBookItem.index].unit }}</p>
-          <p v-show="materialBookItem.book">{{ materialBookItem.book }}{{ materials[materialBookItem.index].unit }}</p>
-        </div>
-        <div class="weui-cell__ft"></div>
-      </a>
-      <a class="weui-cell weui-cell_access" @click="pickMaterial">
-        <div class="weui-cell__bd">
-          <p>添加</p>
-        </div>
-        <div class="weui-cell__ft"></div>
-      </a>
-    </div>
-    <div class="weui-cells__tips">说明：请准确填写预约人姓名、联系方式、活动名称、领取时间、归还时间和物资借用列表，否则研会办公室将拒绝申请。只允许预约往后五天内（包括今天）的物资借用，并在领取后五天（包括领取当天）内归还，若某类物资没有出现在添加列表中，则表明该物资已全部被预约或借用。物资领取时间及归还时间均为办公室值班时间，即每周一、三、五下午17:30-18:00。对于特殊情况，请联系办公室物资管理人员进行协商。</div>
-    <p class="weui-btn-area">
-      <a @click="createMatbook"
-        :class="{ 'weui-btn': true, 'weui-btn_primary': true, 'weui-btn_disabled': !isEnable }">
-        {{ isEnable ? '提交申请' : '暂停申请' }}
-      </a>
-    </p>
   </div>
 </template>
 
@@ -87,11 +118,22 @@ export default {
       name: '',
       phone: '',
       activity: '',
-      takeDate: '请选择日期',
-      returnDate: '请先选择领取日期',
-      matbookItems: [],
-      materials: [],
-      isEnable: false
+      takeDate: '',
+      returnDate: '',
+      matbookItems: [],           // 已选物资
+      materials: [],              // 默认物资列表
+      isEnable: false,
+      options1: {
+        disabledDate (date) {
+          const disabledDay = date.getDay()
+          return date && (date.valueOf() < Date.now() - 86400000) || (disabledDay === 4) // const disabledDay = date.getDay();   //用一个变量获取这个日期是星期几
+                       // return disabledDay === 4;           //把星期四的全部禁用
+        }
+      },
+      item1: [],                        // 级联选择器数组
+      value1: [],                       // 存储级联选择器的值
+      returnDate1: '',
+      total: 0
     }
   },
   activated () {
@@ -99,12 +141,61 @@ export default {
       this.isEnable = res.body.enable
     }, '正在获取状态')
   },
+  created () {
+    this.pickMaterial2()
+  },
   methods: {
-    createMatbook () {
+    format (labels, selectedData) {
+      if (selectedData[1]) {
+        return '继续选择'
+      }
+    },
+    handleChange (labels, selectedData) {
+      let isSelected = false                                             // 判断是否已选
+      let val1 = selectedData[1].value
+      let n = 0
+      for (let i = 0; i < this.matbookItems.length; ++i) {
+        if (this.matbookItems[i].index === val1) {
+          isSelected = true
+          n = i
+          break
+        }
+      }
+      if (!isSelected) {
+        this.matbookItems.push({
+          index: selectedData[1].value,
+          label: selectedData[1].label + ' x ' + selectedData[2].label,
+          material: this.materials[selectedData[1].value]._id,
+          book: selectedData[2].value
+        })
+      } else {
+        this.matbookItems[n].label = selectedData[1].label + ' x ' + selectedData[2].label
+        this.matbookItems[n].book = selectedData[2].value
+      }
+      this.$options.methods.calculate.bind(this)()  // 刷新价格
+    },
+    delItem (matbookItem) {
+      let index = this.matbookItems.indexOf(matbookItem)
+      this.matbookItems.splice(index, 1)
+      this.$options.methods.calculate.bind(this)()  // 刷新价格
+    },
+    calculate () {
+      this.total = 0
+      for (let i = 0; i < this.matbookItems.length; ++i) {
+        this.total += this.materials[this.matbookItems[i].index].price * this.matbookItems[i].book
+      }
+    },
+    createMatbook () {    // 提交表单
+      if (this.returnDate1) {           // 格式化日期
+        const end1 = new Date()
+        const end2 = this.returnDate1
+        const days = ['日', '一', '二', '三', '四', '五', '六']
+        this.takeDate = `${end1.getFullYear()}年${end1.getMonth() + 1}月${end1.getDate()}日（周${days[end1.getDay()]}）`
+        this.returnDate = `${end2.getFullYear()}年${end2.getMonth() + 1}月${end2.getDate()}日（周${days[end2.getDay()]}）`
+      }
       if (!this.isEnable) return
       if (this.name && this.phone && this.activity &&
-        this.takeDate !== '请选择日期' && this.returnDate !== '请先选择领取日期' &&
-        this.returnDate !== '请选择日期' && this.matbookItems.length) {
+        this.takeDate && this.returnDate && this.matbookItems.length) {    // 选了日期且已选物资的长度不等于0
         api.handleApi(api.postMatbooks({
           user: this.user,
           name: this.name,
@@ -126,90 +217,51 @@ export default {
         weui.alert('请正确填写信息')
       }
     },
-    pickTakeDate () {
-      const now = new Date()
-      const days = ['日', '一', '二', '三', '四', '五', '六']
-      const end = new Date()
-      const dateList = []
-      for (let i = 0; i !== 5; ++i) {
-        end.setTime(now.getTime() + 86400000 * i)
-        if (end.getDay() === 1 || end.getDay() === 3 || end.getDay() === 5) {
-          dateList.push({
-            label: `${end.getFullYear()}年${end.getMonth() + 1}月${end.getDate()}日（周${days[end.getDay()]}）`,
-            value: i
-          })
-        }
-      }
-      weui.picker(dateList, {
-        onConfirm: (result) => {
-          this.takeDate = result[0].label
-          this.returnDate = '请选择日期'
-        },
-        id: 'take-date-picker'
-      })
-    },
-    pickReturnDate () {
-      if (this.returnDate !== '请先选择领取日期') {
-        const days = ['日', '一', '二', '三', '四', '五', '六']
-        const yearIndex = this.takeDate.indexOf('年')
-        const monthIndex = this.takeDate.indexOf('月')
-        const dateIndex = this.takeDate.indexOf('日')
-        const startDate = new Date()
-        startDate.setFullYear(
-          parseInt(this.takeDate.slice(0, yearIndex)),
-          parseInt(this.takeDate.slice(yearIndex + 1, monthIndex) - 1),
-          parseInt(this.takeDate.slice(monthIndex + 1, dateIndex)))
-        const end = new Date()
-        const dateList = []
-        for (let i = 0; i !== 5; ++i) {
-          end.setTime(startDate.getTime() + 86400000 * i)
-          if (end.getDay() === 1 || end.getDay() === 3 || end.getDay() === 5) {
-            dateList.push({
-              label: `${end.getFullYear()}年${end.getMonth() + 1}月${end.getDate()}日（周${days[end.getDay()]}）`,
-              value: i
+    pickMaterial2 () {                 // 选择物资
+      api.handleApi(api.getMaterials(), res => {  // 用api.getmaterials通信
+        this.materials = res.body.list
+        this.materials.push({})
+        this.item1 = []
+        let children = []
+        for (let i = 0; i < this.materials.length - 1; ++i) {    // 显示物资
+          let grandson = [ ]
+          for (let j = 1; j < this.materials[i].left + 1; ++j) {
+            grandson.push({
+              label: j + this.materials[i].unit,
+              value: j
+            })
+          } if (grandson.length === 0) {
+            grandson.push({
+              label: '已借空',
+              value: 0,
+              disabled: true
             })
           }
-        }
-        weui.picker(dateList, {
-          onConfirm: (result) => {
-            this.returnDate = result[0].label
-          },
-          id: 'return-date-picker'
-        })
-      }
-    },
-    pickNumber (index, materialBookItem, n) {
-      const options = []
-      options.push({
-        label: '删除',
-        value: 0
-      })
-      for (let i = 1; i <= n; ++i) {
-        options.push({
-          label: i,
-          value: i
-        })
-      }
-      weui.picker(options, {
-        defaultValue: [1],
-        onConfirm: (result) => {
-          if (result[0].value) {
-            materialBookItem.book = result[0].value
-          } else {
-            this.matbookItems.splice(index, 1)
+          children.push({
+            label: this.materials[i].name,    // this.materials[i].left+this.materials[i].unit,
+            value: i,
+            children: grandson
+          })
+          if (this.materials[i + 1].type !== this.materials[i].type) {
+            if (children.length) {
+              this.item1.push({
+                label: this.materials[i].type,
+                value: i,
+                children
+              })
+            }children = []
           }
-        },
-        id: 'number-picker'
-      })
+        }
+      }, '正在加载列表')
     },
-    pickMaterial () {
-      api.handleApi(api.getMaterials(), res => {
+    pickMaterial () {                 // 选择物资
+      api.handleApi(api.getMaterials(), res => {  // 通信
         this.materials = res.body.list
         this.materials.push({})
         const options = []
         let children = []
-        for (let i = 0; i < this.materials.length - 1; ++i) {
-          let isSelected = false
+        for (let i = 0; i < this.materials.length - 1; ++i) {   // 显示i项物资
+          let isSelected = false                // 已选物资不显示
           for (const materialBookItem of this.matbookItems) {
             if (materialBookItem.index === i) {
               isSelected = true
@@ -217,14 +269,14 @@ export default {
             }
           }
           if (!isSelected) {
-            children.push({
+            children.push({                                 // 如果没被选的,json推入children数组
               label: this.materials[i].name,
               value: i
             })
           }
-          if (this.materials[i + 1].type !== this.materials[i].type) {
+          if (this.materials[i + 1].type !== this.materials[i].type) {  // 如果第i+1项的类型和第i项的类型不一样
             if (children.length) {
-              options.push({
+              options.push({                                          // 选择器中推入类别和该类别下的物资
                 label: this.materials[i].type,
                 children
               })
@@ -247,9 +299,9 @@ export default {
           onConfirm: result => {
             if (result[1] && result[1].value !== -1) {
               this.matbookItems.push({
-                index: result[1].value,
+                index: result[1].value,        // 物资编号
                 material: this.materials[result[1].value]._id,
-                book: 0
+                book: 0                        // 已选数目
               })
             }
           },

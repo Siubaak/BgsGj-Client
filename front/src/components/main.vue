@@ -11,7 +11,7 @@
           <router-view></router-view>
         </keep-alive>
       </div>
-      <div class="weui-tabbar">
+      <div class="weui-tabbar" style="position:fixed;bottom:0;">
         <router-link to='/'
           :class="{ 'weui-tabbar__item': true, 'weui-bar__item_on': path === '/' }"
           @click.native="click">
